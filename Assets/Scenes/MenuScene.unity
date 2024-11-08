@@ -883,7 +883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &368537235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1280,7 +1280,7 @@ GameObject:
   - component: {fileID: 529499181}
   - component: {fileID: 529499180}
   m_Layer: 5
-  m_Name: EnemyIP
+  m_Name: LOG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1325,7 +1325,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Enemy IP:'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3300,6 +3300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c58f5eadf15eb419745b6e36e64e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CreateObj: {fileID: 627876867}
+  LogObj: {fileID: 529499178}
 --- !u!1 &1437338290
 GameObject:
   m_ObjectHideFlags: 0
@@ -3315,7 +3317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1437338291
 RectTransform:
   m_ObjectHideFlags: 0
