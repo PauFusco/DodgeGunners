@@ -6,30 +6,41 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject CreateLobbyObj;
+    private GameObject CreateLobbyObj, JoinLobbyObj, QuitObj, BaseMenuParent,
+        CreateLobbyMenuParent, JoinLobbyMenuParent, CreateLobbyBackObj, JoinLobbyBackObj;
 
-    [SerializeField]
-    private GameObject JoinLobbyObj;
-
-    private Button CreateLobbyButton;
-    private Button JoinLobbyButton;
+    private Button CreateLobbyButton, JoinLobbyButton, QuitButton,
+        CreateLobbyBackButton, JoinLobbyBackButton;
 
     private void Start()
     {
         CreateLobbyButton = CreateLobbyObj.GetComponent<Button>();
         JoinLobbyButton = JoinLobbyObj.GetComponent<Button>();
+        QuitButton = QuitObj.GetComponent<Button>();
+        CreateLobbyBackButton = CreateLobbyBackObj.GetComponent<Button>();
+        JoinLobbyBackButton = JoinLobbyBackObj.GetComponent<Button>();
 
-        CreateLobbyButton.onClick.AddListener(CreateLobbyEnable);
-        JoinLobbyButton.onClick.AddListener(JoinLobbyEnable);
+        CreateLobbyButton.onClick.AddListener(() => ChangeMenu(BaseMenuParent, CreateLobbyMenuParent));
+        JoinLobbyButton.onClick.AddListener(() => ChangeMenu(BaseMenuParent, JoinLobbyMenuParent));
+        CreateLobbyBackButton.onClick.AddListener(() => ChangeMenu(CreateLobbyMenuParent, BaseMenuParent));
+        JoinLobbyBackButton.onClick.AddListener(() => ChangeMenu(JoinLobbyMenuParent, BaseMenuParent));
+
+        QuitButton.onClick.AddListener(QuitApp);
+
+        BaseMenuParent.SetActive(true);
+        CreateLobbyMenuParent.SetActive(false);
+        JoinLobbyMenuParent.SetActive(false);
     }
 
-    private void CreateLobbyEnable()
+    private void ChangeMenu(GameObject from, GameObject to)
     {
-        Debug.Log("Create Lobby");
+        from.SetActive(false);
+        to.SetActive(true);
     }
 
-    private void JoinLobbyEnable()
+    private void QuitApp()
     {
-        Debug.Log("Join Lobby");
+        Debug.Log("Quit App");
+        Application.Quit();
     }
 }
