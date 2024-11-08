@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,15 +5,17 @@ using UnityEngine.UI;
 public class CreateLobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject CreateObj, LogObj;
+    private GameObject CreateObj, LogObj, UsernameInputFieldObj;
 
     private Button CreateButton;
     private TextMeshProUGUI Log;
+    private TMP_InputField UsernameInput;
 
     private void Start()
     {
         CreateButton = CreateObj.GetComponent<Button>();
         Log = LogObj.GetComponent<TextMeshProUGUI>();
+        UsernameInput = UsernameInputFieldObj.GetComponent<TMP_InputField>();
 
         CreateButton.onClick.AddListener(LobbyCreate);
     }
