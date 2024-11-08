@@ -8,13 +8,7 @@ using UnityEngine;
 
 public class ServerUDP : MonoBehaviour
 {
-    Socket socket;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Socket socket;
 
     public void StartServer()
     {
@@ -26,13 +20,7 @@ public class ServerUDP : MonoBehaviour
         newConnection.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void Receive()
+    private void Receive()
     {
         int recv;
         byte[] data = new byte[1024];
@@ -59,7 +47,7 @@ public class ServerUDP : MonoBehaviour
         }
     }
 
-    void Send(EndPoint Remote)
+    private void Send(EndPoint Remote)
     {
         byte[] data = Encoding.ASCII.GetBytes("Connected to server " /*+ serverName.text*/);
         socket.SendTo(data, Remote);

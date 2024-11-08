@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreateLobby : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private GameObject CreateObj;
+
+    private Button CreateButton;
+
+    private void Start()
     {
-        
+        CreateButton = CreateObj.GetComponent<Button>();
+
+        CreateButton.onClick.AddListener(LobbyCreate);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void LobbyCreate()
     {
-        
+        Debug.Log("CreateLobby");
     }
 }

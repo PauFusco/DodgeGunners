@@ -15,6 +15,12 @@ public class GameManager : MonoBehaviour
             _username = username;
             _endpoint = endpoint;
         }
+
+        public string GetUsrnm()
+        { return _username; }
+
+        public EndPoint GetEndPoint()
+        { return _endpoint; }
     }
 
     private List<Player> PlayerList;
