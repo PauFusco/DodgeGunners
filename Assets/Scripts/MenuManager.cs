@@ -6,30 +6,30 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject CreateLobbyObj, JoinLobbyObj, QuitObj, BaseMenuParent,
-        CreateLobbyMenuParent, JoinLobbyMenuParent, CreateLobbyBackObj, JoinLobbyBackObj;
+    private GameObject CreateLobby, JoinLobby, Quit, BaseParent,
+        CreateParent, JoinParent, CreateBack, JoinBack;
 
     private Button CreateLobbyButton, JoinLobbyButton, QuitButton,
         CreateLobbyBackButton, JoinLobbyBackButton;
 
     private void Start()
     {
-        CreateLobbyButton = CreateLobbyObj.GetComponent<Button>();
-        JoinLobbyButton = JoinLobbyObj.GetComponent<Button>();
-        QuitButton = QuitObj.GetComponent<Button>();
-        CreateLobbyBackButton = CreateLobbyBackObj.GetComponent<Button>();
-        JoinLobbyBackButton = JoinLobbyBackObj.GetComponent<Button>();
+        CreateLobbyButton = CreateLobby.GetComponent<Button>();
+        JoinLobbyButton = JoinLobby.GetComponent<Button>();
+        QuitButton = Quit.GetComponent<Button>();
+        CreateLobbyBackButton = CreateBack.GetComponent<Button>();
+        JoinLobbyBackButton = JoinBack.GetComponent<Button>();
 
-        CreateLobbyButton.onClick.AddListener(() => ChangeMenu(BaseMenuParent, CreateLobbyMenuParent));
-        JoinLobbyButton.onClick.AddListener(() => ChangeMenu(BaseMenuParent, JoinLobbyMenuParent));
-        CreateLobbyBackButton.onClick.AddListener(() => ChangeMenu(CreateLobbyMenuParent, BaseMenuParent));
-        JoinLobbyBackButton.onClick.AddListener(() => ChangeMenu(JoinLobbyMenuParent, BaseMenuParent));
+        CreateLobbyButton.onClick.AddListener(() => ChangeMenu(BaseParent, CreateParent));
+        JoinLobbyButton.onClick.AddListener(() => ChangeMenu(BaseParent, JoinParent));
+        CreateLobbyBackButton.onClick.AddListener(() => ChangeMenu(CreateParent, BaseParent));
+        JoinLobbyBackButton.onClick.AddListener(() => ChangeMenu(JoinParent, BaseParent));
 
         QuitButton.onClick.AddListener(QuitApp);
 
-        BaseMenuParent.SetActive(true);
-        CreateLobbyMenuParent.SetActive(false);
-        JoinLobbyMenuParent.SetActive(false);
+        BaseParent.SetActive(true);
+        CreateParent.SetActive(false);
+        JoinParent.SetActive(false);
     }
 
     private void ChangeMenu(GameObject from, GameObject to)
