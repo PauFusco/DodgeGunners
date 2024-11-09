@@ -9,25 +9,25 @@ using System.Text;
 public class CreateLobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject CreateObj, StartObj, LogObj, UsernameInputFieldObj, GameManagerObj;
+    private GameObject createObj, startObj, logObj, usernameInputFieldObj, gameManagerObj;
 
-    private Button CreateButton, StartButton;
-    private TextMeshProUGUI Log;
+    private Button createButton, startButton;
+    private TextMeshProUGUI log;
     private TMP_InputField usernameInput;
     private GameManager gameManager;
 
-    Socket socket;
+    private Socket socket;
 
     private void Start()
     {
-        CreateButton = CreateObj.GetComponent<Button>();
-        StartButton = StartObj.GetComponent<Button>();
-        Log = LogObj.GetComponent<TextMeshProUGUI>();
-        usernameInput = UsernameInputFieldObj.GetComponent<TMP_InputField>();
-        gameManager = GameManagerObj.GetComponent<GameManager>();
+        createButton = createObj.GetComponent<Button>();
+        startButton = startObj.GetComponent<Button>();
+        log = logObj.GetComponent<TextMeshProUGUI>();
+        usernameInput = usernameInputFieldObj.GetComponent<TMP_InputField>();
+        gameManager = gameManagerObj.GetComponent<GameManager>();
 
-        CreateButton.onClick.AddListener(LobbyCreate);
-        StartButton.onClick.AddListener(LobbyStart);
+        createButton.onClick.AddListener(LobbyCreate);
+        startButton.onClick.AddListener(LobbyStart);
     }
 
     private void LobbyCreate()
@@ -41,13 +41,16 @@ public class CreateLobby : MonoBehaviour
 
         CreatePrintLog("Lobby Created");
 
-        Thread newConnectionCheck = new Thread(CheckNewPlayers);
+        Thread newConnectionCheck = new(CheckNewPlayers);
         newConnectionCheck.Start();
     }
 
     private void LobbyStart()
     {
+        if (gameManager.PlayerCount() < 2 || gameManager.PlayerCount() > 2) return;
 
+        //Start Game
+        //Player Number must be 2
     }
 
     private void CheckNewPlayers()
@@ -65,6 +68,7 @@ public class CreateLobby : MonoBehaviour
             if (recv == 0) continue;
 
             string message = Encoding.ASCII.GetString(data, 0, recv);
+            CreatePrintLog(message + " Just Joined!");
 
             gameManager.AddNewPlayer(message, remote);
         }
@@ -72,6 +76,6 @@ public class CreateLobby : MonoBehaviour
 
     public void CreatePrintLog(string text)
     {
-        Log.text = text;
+        log.text = text;
     }
 }
