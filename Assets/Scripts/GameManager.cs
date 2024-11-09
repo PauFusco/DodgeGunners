@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
 {
     private struct Player
     {
-        private string _username;
-        private EndPoint _endpoint;
+        readonly string _username;
+        readonly EndPoint _endpoint;
 
         public Player(string username, EndPoint endpoint)
         {
@@ -23,10 +23,21 @@ public class GameManager : MonoBehaviour
         { return _endpoint; }
     }
 
-    private List<Player> PlayerList;
+    private List<Player> PlayerList = new();
 
     public void AddNewPlayer(string username, EndPoint ep)
     {
-        PlayerList.Add(new(username, ep));
+        Player newPlayer = new(username, ep);
+        PlayerList.Add(newPlayer);
+    }
+
+    public void ClearPlayerList()
+    {
+        PlayerList.Clear();
+    }
+
+    public int PlayerCount()
+    {
+        return PlayerList.Count;
     }
 }
