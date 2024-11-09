@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
+using UnityEngine.SceneManagement;
 
 public class CreateLobby : MonoBehaviour
 {
@@ -62,6 +63,7 @@ public class CreateLobby : MonoBehaviour
         //Player Number must be 1 enemy
 
         Debug.Log("Start Game");
+        //SceneManager.LoadScene(1);
     }
 
     private void CheckNewPlayers()
