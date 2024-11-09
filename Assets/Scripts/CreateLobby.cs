@@ -18,6 +18,9 @@ public class CreateLobby : MonoBehaviour
 
     private Socket socket;
 
+    string debugText;
+    bool startGame = false;
+
     private void Start()
     {
         createButton = createObj.GetComponent<Button>();
@@ -28,6 +31,13 @@ public class CreateLobby : MonoBehaviour
 
         createButton.onClick.AddListener(LobbyCreate);
         startButton.onClick.AddListener(LobbyStart);
+        startButton.interactable = startGame;
+    }
+
+    private void Update()
+    {
+        log.text = debugText;
+        startButton.interactable = startGame;
     }
 
     private void LobbyCreate()
@@ -38,7 +48,7 @@ public class CreateLobby : MonoBehaviour
 
         gameManager.ClearEnemy();
 
-        CreatePrintLog("Lobby Created");
+        debugText = "Lobby Created";
 
         Thread newConnectionCheck = new(CheckNewPlayers);
         newConnectionCheck.Start();
@@ -69,9 +79,10 @@ public class CreateLobby : MonoBehaviour
             if (recv == 0) continue;
 
             string message = Encoding.ASCII.GetString(data, 0, recv);
-            //CreatePrintLog(message + " Just Joined!");
+            debugText = message + " Just Joined!";
 
             gameManager.AddEnemy(message, remote);
+            startGame = true;
         }
     }
 
