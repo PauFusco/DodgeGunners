@@ -3299,11 +3299,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c58f5eadf15eb419745b6e36e64e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createObj: {fileID: 0}
-  startObj: {fileID: 0}
-  logObj: {fileID: 0}
-  usernameInputFieldObj: {fileID: 0}
-  gameManagerObj: {fileID: 0}
+  createObj: {fileID: 627876867}
+  startObj: {fileID: 297793084}
+  logObj: {fileID: 529499178}
+  usernameInputFieldObj: {fileID: 913370323}
+  gameManagerObj: {fileID: 1059067548}
 --- !u!1 &1437338290
 GameObject:
   m_ObjectHideFlags: 0

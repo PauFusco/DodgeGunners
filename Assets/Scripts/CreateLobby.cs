@@ -36,8 +36,7 @@ public class CreateLobby : MonoBehaviour
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         socket.Bind(ipep);
 
-        gameManager.ClearPlayerList();
-        gameManager.AddNewPlayer(usernameInput.text, ipep);
+        gameManager.ClearEnemy();
 
         CreatePrintLog("Lobby Created");
 
@@ -47,10 +46,10 @@ public class CreateLobby : MonoBehaviour
 
     private void LobbyStart()
     {
-        if (gameManager.PlayerCount() < 2 || gameManager.PlayerCount() > 2) return;
+        if (gameManager.GetEnemy().GetEndPoint() == null) return;
 
         //Start Game
-        //Player Number must be 2
+        //Player Number must be 1 enemy
     }
 
     private void CheckNewPlayers()
@@ -61,7 +60,7 @@ public class CreateLobby : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
-        while (gameManager.PlayerCount() < 2)
+        while (gameManager.GetEnemy().GetEndPoint() != null)
         {
             recv = socket.ReceiveFrom(data, ref remote);
 
@@ -70,8 +69,17 @@ public class CreateLobby : MonoBehaviour
             string message = Encoding.ASCII.GetString(data, 0, recv);
             CreatePrintLog(message + " Just Joined!");
 
-            gameManager.AddNewPlayer(message, remote);
+            gameManager.AddEnemy(message, remote);
         }
+    }
+
+    private void Response()
+    {
+        byte[] username = new byte[1024];
+
+        username = Encoding.ASCII.GetBytes(usernameInput.text);
+
+        socket.SendTo(username, gameManager.GetEnemy().GetEndPoint());
     }
 
     public void CreatePrintLog(string text)

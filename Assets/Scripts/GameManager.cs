@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private struct Player
+    public readonly struct Player
     {
-        readonly string _username;
-        readonly EndPoint _endpoint;
+        private readonly string _username;
+        private readonly EndPoint _endpoint;
 
         public Player(string username, EndPoint endpoint)
         {
@@ -23,21 +23,20 @@ public class GameManager : MonoBehaviour
         { return _endpoint; }
     }
 
-    private List<Player> PlayerList = new();
+    private Player enemy;
 
-    public void AddNewPlayer(string username, EndPoint ep)
+    public void AddEnemy(string username, EndPoint ep)
     {
-        Player newPlayer = new(username, ep);
-        PlayerList.Add(newPlayer);
+        enemy = new(username, ep);
     }
 
-    public void ClearPlayerList()
+    public Player GetEnemy()
     {
-        PlayerList.Clear();
+        return enemy;
     }
 
-    public int PlayerCount()
+    public void ClearEnemy()
     {
-        return PlayerList.Count;
+        enemy = new("", null);
     }
 }
