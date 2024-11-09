@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class JoinLobby : MonoBehaviour
 {
+    [SerializeField]
     private GameObject joinObj, usernameObj, hostIPObj, gameManagerObj;
 
     private Button join;
@@ -61,6 +62,7 @@ public class JoinLobby : MonoBehaviour
             if (recv == 0) continue;
 
             gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP);
+
             break;
         }
     }

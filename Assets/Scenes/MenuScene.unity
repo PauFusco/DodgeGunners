@@ -2228,6 +2228,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660bc29339416f44790273e0c5080a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  joinObj: {fileID: 1476179589}
+  usernameObj: {fileID: 581494829}
+  hostIPObj: {fileID: 1870384614}
+  gameManagerObj: {fileID: 1059067548}
 --- !u!1 &895311500
 GameObject:
   m_ObjectHideFlags: 0
