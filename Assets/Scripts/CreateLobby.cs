@@ -50,6 +50,8 @@ public class CreateLobby : MonoBehaviour
 
         //Start Game
         //Player Number must be 1 enemy
+
+        Debug.Log("Start Game");
     }
 
     private void CheckNewPlayers()
@@ -60,14 +62,14 @@ public class CreateLobby : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
-        while (gameManager.GetEnemy().GetEndPoint() != null)
+        while (gameManager.GetEnemy().GetEndPoint() == null)
         {
             recv = socket.ReceiveFrom(data, ref remote);
 
             if (recv == 0) continue;
 
             string message = Encoding.ASCII.GetString(data, 0, recv);
-            CreatePrintLog(message + " Just Joined!");
+            //CreatePrintLog(message + " Just Joined!");
 
             gameManager.AddEnemy(message, remote);
         }
