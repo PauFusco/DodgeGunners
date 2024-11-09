@@ -63,7 +63,7 @@ public class CreateLobby : MonoBehaviour
         //Player Number must be 1 enemy
 
         Debug.Log("Start Game");
-        //SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1);
     }
 
     private void CheckNewPlayers()

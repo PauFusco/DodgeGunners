@@ -39,4 +39,9 @@ public class GameManager : MonoBehaviour
     {
         enemy = new("", null);
     }
+
+    void Awake()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
 }

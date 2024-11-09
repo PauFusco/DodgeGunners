@@ -27,6 +27,12 @@ public class JoinLobby : MonoBehaviour
         join.onClick.AddListener(LobbyJoin);
     }
 
+    private void Update()
+    {
+        // if start game -> load scene
+        // 
+    }
+
     private void LobbyJoin()
     {
         hostIPEP = new(IPAddress.Parse(hostIPInput.text), 9050);
