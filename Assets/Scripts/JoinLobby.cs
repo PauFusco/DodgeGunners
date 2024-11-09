@@ -61,6 +61,7 @@ public class JoinLobby : MonoBehaviour
             if (recv == 0) continue;
 
             gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP);
+            break;
         }
     }
 }
