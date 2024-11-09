@@ -883,7 +883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &368537235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2191,7 +2191,7 @@ GameObject:
   - component: {fileID: 833063077}
   - component: {fileID: 833063078}
   m_Layer: 5
-  m_Name: JoinLobbyy
+  m_Name: JoinLobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3299,11 +3299,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c58f5eadf15eb419745b6e36e64e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CreateObj: {fileID: 627876867}
-  StartObj: {fileID: 297793084}
-  LogObj: {fileID: 529499178}
-  UsernameInputFieldObj: {fileID: 913370323}
-  GameManagerObj: {fileID: 1059067548}
+  createObj: {fileID: 0}
+  startObj: {fileID: 0}
+  logObj: {fileID: 0}
+  usernameInputFieldObj: {fileID: 0}
+  gameManagerObj: {fileID: 0}
 --- !u!1 &1437338290
 GameObject:
   m_ObjectHideFlags: 0
@@ -3746,7 +3746,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1504523151
 RectTransform:
   m_ObjectHideFlags: 0
