@@ -17,12 +17,12 @@ public class PlayerBehaviour : MonoBehaviour
         transform.position += m_speed * Time.deltaTime * Vector3.right;
     }
 
-    public void MoveForward()
+    public void MoveUp()
     {
         transform.position += m_speed * Time.deltaTime * Vector3.up;
     }
 
-    public void MoveBack()
+    public void MoveDown()
     {
         transform.position += m_speed * Time.deltaTime * Vector3.down;
     }

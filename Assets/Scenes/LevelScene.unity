@@ -258,7 +258,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hostObj: {fileID: 1904642269}
   remoteObj: {fileID: 2097326850}
-  gameManagerObj: {fileID: 0}
 --- !u!4 &509654363
 Transform:
   m_ObjectHideFlags: 0
@@ -588,7 +587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 367912932777164309, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.15
+      value: 4.3
       objectReference: {fileID: 0}
     - target: {fileID: 367912932777164309, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_LocalRotation.w
@@ -654,7 +653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 367912932777164309, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.15
+      value: -4.44
       objectReference: {fileID: 0}
     - target: {fileID: 367912932777164309, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_LocalRotation.w

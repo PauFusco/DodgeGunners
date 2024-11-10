@@ -36,7 +36,11 @@ public class JoinLobby : MonoBehaviour
 
     private void Update()
     {
-        if (startGame) SceneManager.LoadScene(1);
+        if (startGame)
+        {
+            socket.Close();
+            SceneManager.LoadScene(1);
+        }
     }
 
     private void LobbyJoin()

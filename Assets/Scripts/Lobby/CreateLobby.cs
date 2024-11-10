@@ -62,6 +62,8 @@ public class CreateLobby : MonoBehaviour
 
         socket.SendTo(startGame, gameManager.GetEnemy().GetEndPoint());
 
+        socket.Close();
+
         SceneManager.LoadScene(1);
     }
 
