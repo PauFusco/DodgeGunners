@@ -80,11 +80,14 @@ public class PlayerManager : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
+        byte[] data;
+        int recv;
+
         // Assign netPos with recieved position
         while (true)
         {
-            byte[] data = new byte[1024];
-            int recv;
+            data = new byte[1024];
+            
             if (localIsHost) recv = socket.Receive(data);
             else recv = socket.ReceiveFrom(data, ref remote);
 
@@ -97,10 +100,10 @@ public class PlayerManager : MonoBehaviour
     private Vector3 StringToVector(string str)
     {
         string[] temp = str[1..^1].Split(',');
-        float x = float.Parse(temp[0], CultureInfo.InvariantCulture);
-        float y = float.Parse(temp[1], CultureInfo.InvariantCulture);
-        float z = float.Parse(temp[2], CultureInfo.InvariantCulture);
 
-        return new Vector3(x, y, z);
+        return new Vector3(
+            float.Parse(temp[0], CultureInfo.InvariantCulture), 
+            float.Parse(temp[1], CultureInfo.InvariantCulture), 
+            float.Parse(temp[2], CultureInfo.InvariantCulture));
     }
 }

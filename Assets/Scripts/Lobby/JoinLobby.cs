@@ -68,10 +68,13 @@ public class JoinLobby : MonoBehaviour
 
     private void RecieveEnemyUsername()
     {
+        byte[] data;
+        int recv;
+
         while (true)
         {
-            byte[] data = new byte[1024];
-            int recv = socket.Receive(data);
+            data = new byte[1024];
+            recv = socket.Receive(data);
 
             if (recv == 0) continue;
 
@@ -88,10 +91,13 @@ public class JoinLobby : MonoBehaviour
 
     private void RecieveGameStart()
     {
+        byte[] data;
+        int recv;
+
         while (true)
         {
-            byte[] data = new byte[1024];
-            int recv = socket.Receive(data);
+            data = new byte[1024];
+            recv = socket.Receive(data);
 
             if (recv == 0) continue;
 
