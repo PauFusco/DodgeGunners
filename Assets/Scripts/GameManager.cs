@@ -7,19 +7,18 @@ public class GameManager : MonoBehaviour
 {
     public readonly struct Player
     {
-        private enum Type
+        public enum Type
         {
+            DEFAULT = 0,
             HOST,
             REMOTE
         }
-        
-        private readonly string _username;
-        private readonly EndPoint _endpoint;
 
-        public Player(string username, EndPoint endpoint)
+        public Player(string username, EndPoint endpoint, Type type)
         {
             _username = username;
             _endpoint = endpoint;
+            _type = type;
         }
 
         public string GetUsrnm()
@@ -28,27 +27,22 @@ public class GameManager : MonoBehaviour
         public EndPoint GetEndPoint()
         { return _endpoint; }
 
+        private readonly string _username;
+        private readonly EndPoint _endpoint;
+        private readonly Type _type;
     }
 
     private Player enemy;
 
-    public void AddEnemy(string username, EndPoint ep)
-    {
-        enemy = new(username, ep);
-    }
+    private void Awake()
+    { DontDestroyOnLoad(transform.gameObject); }
+
+    public void AddEnemy(string username, EndPoint ep, Player.Type type)
+    { enemy = new(username, ep, type); }
 
     public Player GetEnemy()
-    {
-        return enemy;
-    }
+    { return enemy; }
 
     public void ClearEnemy()
-    {
-        enemy = new("", null);
-    }
-
-    void Awake()
-    {
-        DontDestroyOnLoad(transform.gameObject);
-    }
+    { enemy = new("", null, 0); }
 }

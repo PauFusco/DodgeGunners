@@ -5,6 +5,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class JoinLobby : MonoBehaviour
 {
@@ -18,19 +19,24 @@ public class JoinLobby : MonoBehaviour
     private IPEndPoint hostIPEP;
     private Socket socket;
 
+    private bool startGame;
+
     private void Start()
     {
+        startGame = false;
+
         join = joinObj.GetComponent<Button>();
         usernameInput = usernameObj.GetComponent<TMP_InputField>();
         hostIPInput = hostIPObj.GetComponent<TMP_InputField>();
+
+        gameManager = gameManagerObj.GetComponent<GameManager>();
 
         join.onClick.AddListener(LobbyJoin);
     }
 
     private void Update()
     {
-        // if start game -> load scene
-        // 
+        if (startGame) SceneManager.LoadScene(1);
     }
 
     private void LobbyJoin()
@@ -40,14 +46,7 @@ public class JoinLobby : MonoBehaviour
 
         socket.Connect(hostIPEP);
 
-        Thread sendUsrnm = new(SendUsername);
-        sendUsrnm.Start();
-    }
-
-    private void SendUsername()
-    {
         byte[] username = new byte[1024];
-
         username = Encoding.ASCII.GetBytes(usernameInput.text);
 
         socket.SendTo(username, hostIPEP);
@@ -65,9 +64,29 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP);
+            gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST);
+
+            Thread checkGameStart = new(RecieveGameStart);
+            checkGameStart.Start();
 
             break;
+        }
+    }
+
+    private void RecieveGameStart()
+    {
+        while (true)
+        {
+            byte[] data = new byte[1024];
+            int recv = socket.Receive(data);
+
+            if (recv == 0) continue;
+
+            if (Encoding.ASCII.GetString(data, 0, recv) == "StartGame")
+            {
+                startGame = true;
+                break;
+            }
         }
     }
 }

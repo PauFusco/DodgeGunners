@@ -19,8 +19,8 @@ public class CreateLobby : MonoBehaviour
 
     private Socket socket;
 
-    string debugText;
-    bool startGame = false;
+    private string debugText;
+    private bool startGame = false;
 
     private void Start()
     {
@@ -57,12 +57,11 @@ public class CreateLobby : MonoBehaviour
 
     private void LobbyStart()
     {
-        if (gameManager.GetEnemy().GetEndPoint() == null) return;
+        byte[] startGame = new byte[1024];
+        startGame = Encoding.ASCII.GetBytes("StartGame");
 
-        //Start Game
-        //Player Number must be 1 enemy
+        socket.SendTo(startGame, gameManager.GetEnemy().GetEndPoint());
 
-        Debug.Log("Start Game");
         SceneManager.LoadScene(1);
     }
 
@@ -83,18 +82,15 @@ public class CreateLobby : MonoBehaviour
             string message = Encoding.ASCII.GetString(data, 0, recv);
             debugText = message + " Just Joined!";
 
-            gameManager.AddEnemy(message, remote);
+            gameManager.AddEnemy(message, remote, GameManager.Player.Type.REMOTE);
+
+            byte[] username = new byte[1024];
+            username = Encoding.ASCII.GetBytes(usernameInput.text);
+
+            socket.SendTo(username, gameManager.GetEnemy().GetEndPoint());
+
             startGame = true;
         }
-    }
-
-    private void Response()
-    {
-        byte[] username = new byte[1024];
-
-        username = Encoding.ASCII.GetBytes(usernameInput.text);
-
-        socket.SendTo(username, gameManager.GetEnemy().GetEndPoint());
     }
 
     public void CreatePrintLog(string text)
