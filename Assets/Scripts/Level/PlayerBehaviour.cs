@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
-    private float m_speed = 1;
+    private float m_speed = 1.0f;
 
     public void MoveLeft()
     {
@@ -25,5 +25,10 @@ public class PlayerBehaviour : MonoBehaviour
     public void MoveBack()
     {
         transform.position += m_speed * Time.deltaTime * Vector3.down;
+    }
+
+    public void SetPosition(Vector3 newPos)
+    {
+        transform.position = newPos;
     }
 }

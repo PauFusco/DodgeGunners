@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
         public EndPoint GetEndPoint()
         { return _endpoint; }
 
+        public Type GetPlayerType()
+        { return _type; }
+
         private readonly string _username;
         private readonly EndPoint _endpoint;
         private readonly Type _type;

@@ -1,52 +1,68 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
-using static GameManager;
-//using GameManager;
 
 public class PlayerManager : MonoBehaviour
 {
-    public float m_speed = 1.0f;
+    [SerializeField]
+    private GameObject hostObj, remoteObj, gameManagerObj;
 
-    // Start is called before the first frame update
-    void Start()
+    private GameManager gameManager;
+    private PlayerBehaviour local, remote;
+
+    private Vector3 netPos;
+
+    private bool localIsHost;
+
+    private void Start()
     {
-        
+        gameManager = gameManagerObj.GetComponent<GameManager>();
+        local = hostObj.GetComponent<PlayerBehaviour>();
+        remote = remoteObj.GetComponent<PlayerBehaviour>();
+
+        // This makes the distinction between p1 and p2
+        if (gameManager.GetEnemy().GetPlayerType() == GameManager.Player.Type.HOST) localIsHost = false;
+        else localIsHost = true;
+
+        Thread sendNetMovement = new(SendNetMovement);
+        Thread receiveNetMovement = new(ReceiveNetMovement);
+
+        sendNetMovement.Start();
+        receiveNetMovement.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        // Remote player update pos
-        UpdateRemote(/*which user is?*/);
-
-        // Update player
-        // Depending on key, call function
+        if (localIsHost)
+        {
+            CheckKeyMovement(local);
+            remote.SetPosition(netPos);
+        }
+        else
+        {
+            CheckKeyMovement(remote);
+            local.SetPosition(netPos);
+        }
     }
 
-    void UpdateRemote() 
+    private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
     {
-        // Recieve information
-        // Call functions
+        //Detect Key presses here, call playerBehaviour functions to move objects (example: host.moveleft)
     }
 
-    void MoveLeft(GameObject player)
+    private void SendNetMovement()
     {
-        player.transform.position += Vector3.left * m_speed * Time.deltaTime;
+        // Send local position to remote
+        while (true)
+        { }
     }
 
-    void MoveRight(GameObject player)
+    private void ReceiveNetMovement()
     {
-        player.transform.position += Vector3.left * m_speed * Time.deltaTime;
-    }
-
-    void MoveForward(GameObject player)
-    {
-        player.transform.position += Vector3.left * m_speed * Time.deltaTime;
-    }
-
-    void MoveBack(GameObject player)
-    {
-        player.transform.position += Vector3.left * m_speed * Time.deltaTime;
+        // Assign netPos with recieved position
+        while (true)
+        { }
     }
 }
