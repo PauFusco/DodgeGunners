@@ -18,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         local = hostObj.GetComponent<PlayerBehaviour>();
         remote = remoteObj.GetComponent<PlayerBehaviour>();
 
@@ -32,7 +33,6 @@ public class PlayerManager : MonoBehaviour
         receiveNetMovement.Start();
     }
 
-    // Update is called once per frame
     private void FixedUpdate()
     {
         if (localIsHost)
