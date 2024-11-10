@@ -7,6 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public readonly struct Player
     {
+        private enum Type
+        {
+            HOST,
+            REMOTE
+        }
+        
         private readonly string _username;
         private readonly EndPoint _endpoint;
 
@@ -21,6 +27,7 @@ public class GameManager : MonoBehaviour
 
         public EndPoint GetEndPoint()
         { return _endpoint; }
+
     }
 
     private Player enemy;
