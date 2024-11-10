@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 public class JoinLobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject joinObj, usernameObj, hostIPObj, gameManagerObj;
+    private GameObject joinObj, usernameObj, hostIPObj, gameManagerObj, logObj;
 
     private Button join;
     private TMP_InputField usernameInput, hostIPInput;
@@ -20,6 +20,9 @@ public class JoinLobby : MonoBehaviour
     private Socket socket;
 
     private bool startGame;
+
+    private TextMeshProUGUI log;
+    private string debugText;
 
     private void Start()
     {
@@ -31,6 +34,8 @@ public class JoinLobby : MonoBehaviour
 
         gameManager = gameManagerObj.GetComponent<GameManager>();
 
+        log = logObj.GetComponent<TextMeshProUGUI>();
+
         join.onClick.AddListener(LobbyJoin);
     }
 
@@ -41,6 +46,7 @@ public class JoinLobby : MonoBehaviour
             socket.Close();
             SceneManager.LoadScene(1);
         }
+        log.text = debugText;
     }
 
     private void LobbyJoin()
@@ -49,6 +55,7 @@ public class JoinLobby : MonoBehaviour
         socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
         socket.Connect(hostIPEP);
+        debugText = "Waiting to join...";
 
         byte[] username = new byte[1024];
         username = Encoding.ASCII.GetBytes(usernameInput.text);
@@ -69,6 +76,8 @@ public class JoinLobby : MonoBehaviour
             if (recv == 0) continue;
 
             gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST);
+
+            debugText = "You have joined " + Encoding.ASCII.GetString(data, 0, recv) + "'s lobby!";
 
             Thread checkGameStart = new(RecieveGameStart);
             checkGameStart.Start();
