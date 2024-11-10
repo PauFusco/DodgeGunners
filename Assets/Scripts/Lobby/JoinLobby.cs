@@ -43,7 +43,7 @@ public class JoinLobby : MonoBehaviour
     {
         if (startGame)
         {
-            socket.Close();
+            //socket.Close();
             SceneManager.LoadScene(1);
         }
         log.text = debugText;
@@ -75,7 +75,7 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST);
+            gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST, socket);
 
             debugText = "You have joined " + Encoding.ASCII.GetString(data, 0, recv) + "'s lobby!";
 
