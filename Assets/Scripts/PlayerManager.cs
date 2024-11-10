@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
             local = hostObj.GetComponent<PlayerBehaviour>();
             remote = remoteObj.GetComponent<PlayerBehaviour>();
 
-            netPos = local.transform.position;
+            netPos = remote.transform.position;
         }
         else if (gameManager.GetEnemy().GetPlayerType() == GameManager.Player.Type.HOST)
         {
@@ -41,7 +41,7 @@ public class PlayerManager : MonoBehaviour
             remote = hostObj.GetComponent<PlayerBehaviour>();
             local = remoteObj.GetComponent<PlayerBehaviour>();
 
-            netPos = remote.transform.position;
+            netPos = local.transform.position;
         }
 
         Thread receiveNetMovement = new(ReceiveNetMovement);
@@ -50,18 +50,9 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (localIsHost)
-        {
-            CheckKeyMovement(local);
-            SendNetMovement(local);
-            remote.SetPosition(netPos);
-        }
-        else
-        {
-            CheckKeyMovement(remote);
-            SendNetMovement(remote);
-            local.SetPosition(netPos);
-        }
+        CheckKeyMovement(local);
+        SendNetMovement(local);
+        remote.SetPosition(netPos);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
