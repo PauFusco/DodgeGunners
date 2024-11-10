@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
             _type = type;
         }
 
-        public string GetUsrnm()
+        public string GetUseraname()
         { return _username; }
 
         public EndPoint GetEndPoint()

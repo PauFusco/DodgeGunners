@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject hostObj, remoteObj, gameManagerObj;
+    private GameObject hostObj, remoteObj;
 
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
@@ -17,7 +17,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        gameManager = gameManagerObj.GetComponent<GameManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         local = hostObj.GetComponent<PlayerBehaviour>();
         remote = remoteObj.GetComponent<PlayerBehaviour>();
 
