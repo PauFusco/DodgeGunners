@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
             _usedSocket = socket;
         }
 
-        public string GetUseraname()
+        public string GetUsername()
         { return _username; }
 
         public EndPoint GetEndPoint()
