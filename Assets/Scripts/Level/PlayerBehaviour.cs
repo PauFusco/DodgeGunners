@@ -12,10 +12,10 @@ public class PlayerBehaviour : MonoBehaviour
     { playerBillboard.text = username; }
 
     public void MoveLeft()
-    { transform.position += m_speed * Time.deltaTime * Vector3.left; }
+    { transform.position += m_speed * Time.deltaTime * Vector3.back; }
 
     public void MoveRight()
-    { transform.position += m_speed * Time.deltaTime * Vector3.right; }
+    { transform.position += m_speed * Time.deltaTime * Vector3.forward; }
 
     public void MoveUp()
     { transform.position += m_speed * Time.deltaTime * Vector3.up; }
