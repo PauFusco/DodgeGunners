@@ -62,8 +62,6 @@ public class CreateLobby : MonoBehaviour
 
         socket.SendTo(startGame, gameManager.GetEnemy().GetEndPoint());
 
-        //socket.Close();
-
         SceneManager.LoadScene(1);
     }
 
@@ -85,6 +83,8 @@ public class CreateLobby : MonoBehaviour
             debugText = message + " Just Joined!";
 
             gameManager.AddEnemy(message, remote, GameManager.Player.Type.REMOTE, socket);
+
+            gameManager.SetLocal(usernameInput.text, GameManager.Player.Type.HOST);
 
             byte[] username = new byte[1024];
             username = Encoding.ASCII.GetBytes(usernameInput.text);
