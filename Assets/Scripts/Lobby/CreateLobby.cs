@@ -57,8 +57,7 @@ public class CreateLobby : MonoBehaviour
 
     private void LobbyStart()
     {
-        byte[] startGame = new byte[1024];
-        startGame = Encoding.ASCII.GetBytes("StartGame");
+        byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
 
         socket.SendTo(startGame, gameManager.GetEnemy().GetEndPoint());
 
@@ -67,8 +66,8 @@ public class CreateLobby : MonoBehaviour
 
     private void CheckNewPlayers()
     {
-        int recv;
         byte[] data = new byte[1024];
+        int recv;
 
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
@@ -86,17 +85,11 @@ public class CreateLobby : MonoBehaviour
 
             gameManager.SetLocal(usernameInput.text, GameManager.Player.Type.HOST);
 
-            byte[] username = new byte[1024];
-            username = Encoding.ASCII.GetBytes(usernameInput.text);
+            byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
 
             socket.SendTo(username, gameManager.GetEnemy().GetEndPoint());
 
             startGame = true;
         }
-    }
-
-    public void CreatePrintLog(string text)
-    {
-        log.text = text;
     }
 }

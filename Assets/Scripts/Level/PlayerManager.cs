@@ -15,8 +15,8 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         if (gameManager.GetEnemy().GetPlayerType() == GameManager.Player.Type.REMOTE)
         {
@@ -54,10 +54,10 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
     {
-        if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
-        if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
-        if (Input.GetKey(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.W)) localPlayerToMove.MoveUp();
+        if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
+        if (Input.GetKey(KeyCode.S)) localPlayerToMove.MoveDown();
+        if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
     }
 
     public void SetNetPosition(Vector3 pos)

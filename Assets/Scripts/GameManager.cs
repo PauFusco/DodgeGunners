@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
         {
             _username = username;
             _endpoint = endpoint;
-            _type = type;
             _usedSocket = socket;
+            _type = type;
         }
 
         public string GetUsername()

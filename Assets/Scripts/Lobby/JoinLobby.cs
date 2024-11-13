@@ -43,7 +43,6 @@ public class JoinLobby : MonoBehaviour
     {
         if (startGame)
         {
-            //socket.Close();
             SceneManager.LoadScene(1);
         }
         log.text = debugText;

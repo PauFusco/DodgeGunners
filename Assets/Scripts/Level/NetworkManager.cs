@@ -21,9 +21,7 @@ public class NetworkManager : MonoBehaviour
         }
 
         public Packet Build()
-        {
-            return new(_data);
-        }
+        { return new(_data); }
 
         private byte[] _data;
     }
@@ -56,6 +54,7 @@ public class NetworkManager : MonoBehaviour
 
         byte[] data;
         int recv;
+
         while (true)
         {
             data = new byte[1024];
