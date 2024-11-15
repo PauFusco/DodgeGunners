@@ -47,7 +47,7 @@ public class CreateLobby : MonoBehaviour
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         socket.Bind(ipep);
 
-        gameManager.ClearEnemy();
+        gameManager.ClearRemote();
 
         debugText = "Lobby Created";
 
@@ -59,7 +59,7 @@ public class CreateLobby : MonoBehaviour
     {
         byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
 
-        socket.SendTo(startGame, gameManager.GetEnemy().GetEndPoint());
+        socket.SendTo(startGame, gameManager.GetRemote().GetEndPoint());
 
         SceneManager.LoadScene(1);
     }
@@ -72,7 +72,7 @@ public class CreateLobby : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
-        while (gameManager.GetEnemy().GetEndPoint() == null)
+        while (gameManager.GetRemote().GetEndPoint() == null)
         {
             recv = socket.ReceiveFrom(data, ref remote);
 
@@ -81,13 +81,13 @@ public class CreateLobby : MonoBehaviour
             string message = Encoding.ASCII.GetString(data, 0, recv);
             debugText = message + " Just Joined!";
 
-            gameManager.AddEnemy(message, remote, GameManager.Player.Type.REMOTE, socket);
+            gameManager.AddRemote(message, remote, GameManager.Player.Type.REMOTE, socket);
 
             gameManager.SetLocal(usernameInput.text, GameManager.Player.Type.HOST);
 
             byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
 
-            socket.SendTo(username, gameManager.GetEnemy().GetEndPoint());
+            socket.SendTo(username, gameManager.GetRemote().GetEndPoint());
 
             startGame = true;
         }

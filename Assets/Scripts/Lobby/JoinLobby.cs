@@ -79,7 +79,7 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            gameManager.AddEnemy(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST, socket);
+            gameManager.AddRemote(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.Player.Type.HOST, socket);
 
             debugText = "You have joined " + Encoding.ASCII.GetString(data, 0, recv) + "'s lobby!";
 

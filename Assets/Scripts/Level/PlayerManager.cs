@@ -18,7 +18,7 @@ public class PlayerManager : MonoBehaviour
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        if (gameManager.GetEnemy().GetPlayerType() == GameManager.Player.Type.REMOTE)
+        if (gameManager.GetRemote().GetPlayerType() == GameManager.Player.Type.REMOTE)
         {
             localIsHost = true;
 
@@ -27,7 +27,7 @@ public class PlayerManager : MonoBehaviour
 
             netPos = remote.transform.position;
         }
-        else if (gameManager.GetEnemy().GetPlayerType() == GameManager.Player.Type.HOST)
+        else if (gameManager.GetRemote().GetPlayerType() == GameManager.Player.Type.HOST)
         {
             localIsHost = false;
 
@@ -38,7 +38,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         local.SetPlayerTag(gameManager.GetLocal().GetUsername());
-        remote.SetPlayerTag(gameManager.GetEnemy().GetUsername());
+        remote.SetPlayerTag(gameManager.GetRemote().GetUsername());
     }
 
     private void Update()

@@ -13,19 +13,6 @@ public class NetworkManager : MonoBehaviour
     private PlayerManager playerManager;
     private GameManager gameManager;
 
-    private struct Packet
-    {
-        private Packet(byte[] dataToWrite)
-        {
-            _data = dataToWrite;
-        }
-
-        public Packet Build()
-        { return new(_data); }
-
-        private byte[] _data;
-    }
-
     private void Start()
     {
         playerManager = playerManagerObj.GetComponent<PlayerManager>();
@@ -39,15 +26,15 @@ public class NetworkManager : MonoBehaviour
     {
         byte[] position = Encoding.ASCII.GetBytes(localPlayerToSend.transform.position.ToString());
 
-        Socket socket = gameManager.GetEnemy().GetSocket();
+        Socket socket = gameManager.GetRemote().GetSocket();
 
-        if (playerManager.GetLocalIsHost()) socket.SendTo(position, gameManager.GetEnemy().GetEndPoint());
+        if (playerManager.GetLocalIsHost()) socket.SendTo(position, gameManager.GetRemote().GetEndPoint());
         else socket.Send(position);
     }
 
     public void ReceiveNetMovement()
     {
-        Socket socket = gameManager.GetEnemy().GetSocket();
+        Socket socket = gameManager.GetRemote().GetSocket();
 
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;

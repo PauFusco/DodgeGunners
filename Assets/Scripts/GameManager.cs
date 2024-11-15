@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public readonly struct Player
+    public class Player
     {
         public enum Type
         {
@@ -40,24 +40,24 @@ public class GameManager : MonoBehaviour
         private readonly Type _type;
     }
 
-    private Player enemy;
+    private Player remote;
     private Player local;
 
     private void Awake()
     { DontDestroyOnLoad(transform.gameObject); }
 
-    public void AddEnemy(string username, EndPoint ep, Player.Type type, Socket socket)
-    { enemy = new(username, ep, type, socket); }
+    public void AddRemote(string username, EndPoint ep, Player.Type type, Socket socket)
+    { remote = new(username, ep, type, socket); }
 
     public void SetLocal(string username, Player.Type type)
     { local = new(username, null, type, null); }
 
-    public Player GetEnemy()
-    { return enemy; }
+    public Player GetRemote()
+    { return remote; }
 
     public Player GetLocal()
     { return local; }
 
-    public void ClearEnemy()
-    { enemy = new("", null, 0, null); }
+    public void ClearRemote()
+    { remote = new("", null, 0, null); }
 }
