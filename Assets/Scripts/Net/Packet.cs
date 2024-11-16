@@ -1,29 +1,37 @@
 using System.Net;
 using System.Net.Sockets;
 
-public static class Packet(byte[] data)
+public abstract class Packet
 {
+    public Packet(byte[] data)
+    {
+        _data = data;
+    }
+
     public byte[] GetData()
     {
         return _data;
     }
 
-    public virtual void BuildPacket();
+    public abstract void BuildPacket();
 
-    private readonly byte[] _data = data;
+    protected byte[] _data;
 }
 
-public static class PlayerPacket(byte[] playerData) : Packet
+public class PlayerPacket : Packet
 {
-    public override byte[] BuildPacket()
+    public PlayerPacket(byte[] playerData) : base(playerData) {}
+
+    public override void BuildPacket()
     {
         _data = new byte[1024];
     }
 }
 
-public static class ProjectilePacket(byte[] projectileData) : Packet
+public class ProjectilePacket : Packet
 {
-    public override byte[] BuildPacket()
+    public ProjectilePacket(byte[] projectileData) : base(projectileData) { }
+    public override void BuildPacket()
     {
         _data = new byte[1024];
     }
