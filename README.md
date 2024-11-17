@@ -3,7 +3,7 @@ by Pau Fusco and Júlia Serra
 
 ## Links 
 Link to GitHub: https://github.com/PauFusco/DodgeGunners
-Link to Release: TODO
+Link to Release: https://github.com/PauFusco/DodgeGunners/releases/tag/v1.0
 
 ## Contributions
 We have worked on some tasks together, so both names will appear on some of the tasks
@@ -16,10 +16,13 @@ We have worked on some tasks together, so both names will appear on some of the 
 - Join Lobby: Pau
 - Show Host IP: Júlia
 - Enable Starting game when both players have joined: Júlia
+- Copy IP: Júlia
 
 ### Level
 - Score: Júlia
 - Timer: Júlia
+- UI: Júlia
+- Passing Usernames: Pau
 - Player Movement: Júlia
 - Updating and Recieving Movement: Pau
 - Sending Movement: Pau
@@ -40,9 +43,11 @@ To move, use WASD:
 MenuScene
 
 ## List of difficulties, comments and bugs
+### Known bugs
+- Build does not take in account the window size, so depending on the proportions you may not see one or both characters as they will be outside the window 
 
 ### Difficulties
-Here is a list of solved bugs
+Here is a list of solved bugs:
 
 #### Player appearing in incorrect position
 Solved by Júlia. 
@@ -54,6 +59,6 @@ Solved by Pau.
 Issue in Start() of the PlayerManager
 
 ### For next delivery
-We ave agreed on leaving this features for next delivery:
+We have agreed on leaving this features for next delivery:
 - Shoot: Although we started code to shoot and there is a prefab created already, we have agreed to implement it once packets work correctly
 - Score: We have stated that score will be implemented after implementing shooting, as score will be determined by bullet collision
