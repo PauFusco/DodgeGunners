@@ -10,11 +10,12 @@ using UnityEngine.SceneManagement;
 public class CreateLobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject createObj, startObj, logObj, usernameInputFieldObj, gameManagerObj;
+    private GameObject createObj, startObj, usernameInputFieldObj, hostObj, logObj, gameManagerObj;
 
     private Button createButton, startButton;
     private TextMeshProUGUI log;
     private TMP_InputField usernameInput;
+    private TextMeshProUGUI hostIP;
     private GameManager gameManager;
 
     private Socket socket;
@@ -28,6 +29,7 @@ public class CreateLobby : MonoBehaviour
         startButton = startObj.GetComponent<Button>();
         log = logObj.GetComponent<TextMeshProUGUI>();
         usernameInput = usernameInputFieldObj.GetComponent<TMP_InputField>();
+        hostIP = hostObj.GetComponent<TextMeshProUGUI>();
         gameManager = gameManagerObj.GetComponent<GameManager>();
 
         createButton.onClick.AddListener(LobbyCreate);
@@ -91,5 +93,16 @@ public class CreateLobby : MonoBehaviour
 
             startGame = true;
         }
+    }
+
+    public void CopyIP()
+    {
+        if (hostIP != null)
+        {
+            GUIUtility.systemCopyBuffer = hostIP.text;
+            debugText = "Copied to Clipboard!";
+        }
+        else
+            debugText = "No IP found!";
     }
 }
