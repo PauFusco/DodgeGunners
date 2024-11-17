@@ -956,7 +956,6 @@ GameObject:
   - component: {fileID: 352594301}
   - component: {fileID: 352594300}
   - component: {fileID: 352594299}
-  - component: {fileID: 352594302}
   m_Layer: 5
   m_Name: CopyIP
   m_TagString: Untagged
@@ -1027,9 +1026,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 352594302}
-        m_TargetAssemblyTypeName: CopyIP, Assembly-CSharp
-        m_MethodName: CopyText
+      - m_Target: {fileID: 1351920237}
+        m_TargetAssemblyTypeName: CreateLobby, Assembly-CSharp
+        m_MethodName: CopyIP
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1077,20 +1076,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 352594297}
   m_CullTransparentMesh: 1
---- !u!114 &352594302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 352594297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb1e43392fbb76945b7fa8424813b250, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hostIPObj: {fileID: 1330904097}
-  logObj: {fileID: 529499178}
 --- !u!1 &368537234
 GameObject:
   m_ObjectHideFlags: 0
@@ -3827,8 +3812,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createObj: {fileID: 627876867}
   startObj: {fileID: 297793084}
-  logObj: {fileID: 529499178}
   usernameInputFieldObj: {fileID: 913370323}
+  hostObj: {fileID: 1330904097}
+  logObj: {fileID: 529499178}
   gameManagerObj: {fileID: 1059067548}
 --- !u!1 &1437338290
 GameObject:
