@@ -25,9 +25,4 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void SetPosition(Vector3 newPos)
     { transform.position = newPos; }
-
-    // Should activate bullet behaviour
-    // Bullets should be in a List<Bullet>
-    public void Shoot() 
-    {}
 }
