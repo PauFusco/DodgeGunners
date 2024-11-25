@@ -1,10 +1,28 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
+    public class NETFLAGS
+    {
+        public NETFLAGS()
+        {
+            player = false;
+            projectiles = false;
+            score = false;
+            gameTime = false;
+        }
+
+        public bool player;
+        public bool projectiles;
+        public bool score;
+        public bool gameTime;
+    }
+
     public class Player
     {
         public enum Type
@@ -34,14 +52,20 @@ public class GameManager : MonoBehaviour
         public Socket GetSocket()
         { return _usedSocket; }
 
+        public UInt16 GetScore()
+        { return _score; }
+
         private readonly string _username;
         private readonly EndPoint _endpoint;
         private readonly Socket _usedSocket;
         private readonly Type _type;
+        private readonly UInt16 _score;
     }
 
     private Player remote;
     private Player local;
+
+    private NETFLAGS _flags;
 
     private void Awake()
     { DontDestroyOnLoad(transform.gameObject); }

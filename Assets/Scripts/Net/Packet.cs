@@ -1,11 +1,12 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 
 public abstract class Packet
 {
-    public Packet(byte[] data)
+    public Packet()
     {
-        _data = data;
+        _data = new byte[1024];
     }
 
     public byte[] GetData()
@@ -13,26 +14,36 @@ public abstract class Packet
         return _data;
     }
 
-    public abstract void BuildPacket();
+    public abstract Packet Build();
+
+    public abstract Packet UnPack();
 
     protected byte[] _data;
+    protected UInt32 _frame;
 }
 
 public class PlayerPacket : Packet
 {
-    public PlayerPacket(byte[] playerData) : base(playerData) {}
-
-    public override void BuildPacket()
+    public override Packet Build()
     {
-        _data = new byte[1024];
+        throw new System.NotImplementedException();
+    }
+
+    public override Packet UnPack()
+    {
+        throw new System.NotImplementedException();
     }
 }
 
 public class ProjectilePacket : Packet
 {
-    public ProjectilePacket(byte[] projectileData) : base(projectileData) { }
-    public override void BuildPacket()
+    public override Packet Build()
     {
-        _data = new byte[1024];
+        throw new System.NotImplementedException();
+    }
+
+    public override Packet UnPack()
+    {
+        throw new System.NotImplementedException();
     }
 }
