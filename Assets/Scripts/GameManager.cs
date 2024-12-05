@@ -65,8 +65,6 @@ public class GameManager : MonoBehaviour
     private Player remote;
     private Player local;
 
-    private NETFLAGS _flags;
-
     private void Awake()
     { DontDestroyOnLoad(transform.gameObject); }
 

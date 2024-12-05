@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
+using NetPacket;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -12,6 +13,33 @@ public class NetworkManager : MonoBehaviour
 
     private PlayerManager playerManager;
     private GameManager gameManager;
+
+    public class PlayerPacket : Packet
+    {
+        private PlayerPacket()
+        {
+            // flags to byte
+            // frame to byte
+
+            // depends on flags:
+            // position to byte
+            // rotation to byte
+            // HP to byte
+            // score to byte
+
+            // add all to packet->_data
+        }
+
+        public override Packet Build()
+        {
+            return new PlayerPacket();
+        }
+
+        public override void UnPack()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 
     private void Start()
     {
