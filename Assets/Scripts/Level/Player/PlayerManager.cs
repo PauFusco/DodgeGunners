@@ -9,32 +9,32 @@ public class PlayerManager : MonoBehaviour
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
 
-    private Vector3 netPos;
-
     private bool localIsHost;
+
+    private Vector3 tempNetPos;
 
     private void Start()
     {
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        if (gameManager.GetRemote().GetPlayerType() == GameManager.Player.Type.REMOTE)
+        if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.REMOTE)
         {
             localIsHost = true;
 
             local = hostObj.GetComponent<PlayerBehaviour>();
             remote = remoteObj.GetComponent<PlayerBehaviour>();
 
-            netPos = remote.transform.position;
+            tempNetPos = remote.transform.position;
         }
-        else if (gameManager.GetRemote().GetPlayerType() == GameManager.Player.Type.HOST)
+        else if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.HOST)
         {
             localIsHost = false;
 
             remote = hostObj.GetComponent<PlayerBehaviour>();
             local = remoteObj.GetComponent<PlayerBehaviour>();
 
-            netPos = local.transform.position;
+            tempNetPos = local.transform.position;
         }
 
         local.SetPlayerTag(gameManager.GetLocal().GetUsername());
@@ -49,7 +49,7 @@ public class PlayerManager : MonoBehaviour
     private void FixedUpdate()
     {
         networkManager.SendNetMovement(local);
-        remote.SetPosition(netPos);
+        remote.SetPosition(tempNetPos);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
@@ -61,8 +61,11 @@ public class PlayerManager : MonoBehaviour
     }
 
     public void SetNetPosition(Vector3 pos)
-    { netPos = pos; }
+    { tempNetPos = pos; }
 
     public bool GetLocalIsHost()
     { return localIsHost; }
+
+    public PlayerBehaviour GetLocal()
+    { return local; }
 }

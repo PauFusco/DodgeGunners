@@ -4,7 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
-using NetPacket;
+using System.Linq;
+using System.IO;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -14,31 +15,49 @@ public class NetworkManager : MonoBehaviour
     private PlayerManager playerManager;
     private GameManager gameManager;
 
-    public class PlayerPacket : Packet
+    public class PlayerPacket
     {
-        private PlayerPacket()
+        private PlayerPacket(GameManager.NetPlayer playerToSend, PlayerBehaviour playerBHToSend)
         {
+            MemoryStream playerMStream = new();
+            BinaryWriter playerBWriter = new(playerMStream);
+
             // flags to byte
             // frame to byte
 
-            // depends on flags:
             // position to byte
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().position.x);
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().position.y);
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().position.z);
+
             // rotation to byte
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().rotation.eulerAngles.x);
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().rotation.eulerAngles.y);
+            playerBWriter.Write(playerBHToSend.GetLocalTransform().rotation.eulerAngles.z);
+
             // HP to byte
+
             // score to byte
+            playerBWriter.Write(playerToSend.GetScore());
 
             // add all to packet->_data
         }
 
-        public override Packet Build()
-        {
-            return new PlayerPacket();
-        }
-
-        public override void UnPack()
+        public void UnPack()
         {
             throw new System.NotImplementedException();
         }
+
+        private byte[] ByteEulerAngles(Quaternion quatRotation)
+        {
+            byte[] xEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.x.ToString() + ",");
+            byte[] yEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.y.ToString() + ",");
+            byte[] zEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.z.ToString() + ";");
+
+            return xEul + yEul + zEul;
+        }
+
+        public byte[] _data;
     }
 
     private void Start()

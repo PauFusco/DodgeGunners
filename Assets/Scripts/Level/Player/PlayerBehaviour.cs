@@ -1,9 +1,12 @@
+using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
     public float m_speed = 1.0f;
+    private readonly UInt16 _score;
 
     [SerializeField]
     private TextMeshProUGUI playerBillboard;
@@ -25,4 +28,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void SetPosition(Vector3 newPos)
     { transform.position = newPos; }
+
+    public Transform GetLocalTransform()
+    { return transform; }
 }
