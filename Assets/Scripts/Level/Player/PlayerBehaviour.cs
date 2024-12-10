@@ -29,6 +29,9 @@ public class PlayerBehaviour : MonoBehaviour
     public void SetPosition(Vector3 newPos)
     { transform.position = newPos; }
 
+    public void SetRotation(Quaternion newRot)
+    { transform.rotation = newRot; }
+
     public Transform GetLocalTransform()
     { return transform; }
 }

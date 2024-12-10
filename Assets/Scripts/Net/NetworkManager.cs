@@ -17,7 +17,7 @@ public class NetworkManager : MonoBehaviour
 
     public class PlayerPacket
     {
-        private PlayerPacket(GameManager.NetPlayer playerToSend, PlayerBehaviour playerBHToSend)
+        public PlayerPacket(GameManager.NetPlayer playerToSend, PlayerBehaviour playerBHToSend)
         {
             MemoryStream playerMStream = new();
             BinaryWriter playerBWriter = new(playerMStream);
@@ -38,26 +38,51 @@ public class NetworkManager : MonoBehaviour
             // HP to byte
 
             // score to byte
-            playerBWriter.Write(playerToSend.GetScore());
+            //playerBWriter.Write(playerToSend.GetScore());
 
             // add all to packet->_data
+            _data = playerMStream.GetBuffer();
         }
 
-        public void UnPack()
+        /// <summary>
+        /// Creates a packet using a buffer and modifies the player set in the definition
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="playerToModify"></param>
+        public PlayerPacket(byte[] data, GameManager.NetPlayer playerToModify, PlayerBehaviour playerBHToModify)
         {
-            throw new System.NotImplementedException();
+            MemoryStream playerMStream = new(data);
+            BinaryReader playerBReader = new(playerMStream);
+
+            // frame
+            // flags
+
+            //position
+            Vector3 newPosition = new()
+            {
+                x = (float)playerBReader.ReadDouble(),
+                y = (float)playerBReader.ReadDouble(),
+                z = (float)playerBReader.ReadDouble()
+            };
+            playerBHToModify.SetPosition(newPosition);
+
+            // rotation
+            Vector3 newERotation = new()
+            {
+                x = (float)playerBReader.ReadDouble(),
+                y = (float)playerBReader.ReadDouble(),
+                z = (float)playerBReader.ReadDouble()
+            };
+            playerBHToModify.SetRotation(Quaternion.Euler(newERotation));
+
+            // HP
+            // score
         }
 
-        private byte[] ByteEulerAngles(Quaternion quatRotation)
-        {
-            byte[] xEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.x.ToString() + ",");
-            byte[] yEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.y.ToString() + ",");
-            byte[] zEul = Encoding.ASCII.GetBytes(playerToSend.transform.rotation.eulerAngles.z.ToString() + ";");
+        public byte[] GetBuffer()
+        { return _data; }
 
-            return xEul + yEul + zEul;
-        }
-
-        public byte[] _data;
+        private readonly byte[] _data;
     }
 
     private void Start()
@@ -65,21 +90,21 @@ public class NetworkManager : MonoBehaviour
         playerManager = playerManagerObj.GetComponent<PlayerManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        Thread receiveNetMovement = new(ReceiveNetMovement);
+        Thread receiveNetMovement = new(RecieveNetInfo);
         receiveNetMovement.Start();
     }
 
-    public void SendNetMovement(PlayerBehaviour localPlayerToSend)
+    public void SendNetInfo(PlayerBehaviour localPlayerToSend)
     {
-        byte[] position = Encoding.ASCII.GetBytes(localPlayerToSend.transform.position.ToString());
+        PlayerPacket localPacket = new(gameManager.GetLocal(), localPlayerToSend);
 
         Socket socket = gameManager.GetRemote().GetSocket();
 
-        if (playerManager.GetLocalIsHost()) socket.SendTo(position, gameManager.GetRemote().GetEndPoint());
-        else socket.Send(position);
+        if (playerManager.GetLocalIsHost()) socket.SendTo(localPacket.GetBuffer(), gameManager.GetRemote().GetEndPoint());
+        else socket.Send(localPacket.GetBuffer());
     }
 
-    public void ReceiveNetMovement()
+    public void RecieveNetInfo()
     {
         Socket socket = gameManager.GetRemote().GetSocket();
 
@@ -98,17 +123,7 @@ public class NetworkManager : MonoBehaviour
 
             if (recv == 0) continue;
 
-            playerManager.SetNetPosition(StringToVector(Encoding.ASCII.GetString(data, 0, recv)));
+            _ = new PlayerPacket(data, gameManager.GetRemote(), playerManager.GetRemote());
         }
-    }
-
-    private Vector3 StringToVector(string str)
-    {
-        string[] temp = str[1..^1].Split(',');
-
-        return new Vector3(
-            float.Parse(temp[0], CultureInfo.InvariantCulture),
-            float.Parse(temp[1], CultureInfo.InvariantCulture),
-            float.Parse(temp[2], CultureInfo.InvariantCulture));
     }
 }

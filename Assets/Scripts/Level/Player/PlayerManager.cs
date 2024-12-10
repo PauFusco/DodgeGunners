@@ -48,7 +48,7 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        networkManager.SendNetMovement(local);
+        networkManager.SendNetInfo(local);
         remote.SetPosition(tempNetPos);
     }
 
@@ -68,4 +68,7 @@ public class PlayerManager : MonoBehaviour
 
     public PlayerBehaviour GetLocal()
     { return local; }
+
+    public PlayerBehaviour GetRemote()
+    { return remote; }
 }
