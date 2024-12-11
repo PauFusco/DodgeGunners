@@ -1,10 +1,7 @@
-using System.Globalization;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
-using System.Linq;
 using System.IO;
 
 public class NetworkManager : MonoBehaviour
@@ -41,7 +38,7 @@ public class NetworkManager : MonoBehaviour
             //playerBWriter.Write(playerToSend.GetScore());
 
             // add all to packet->_data
-            _data = playerMStream.GetBuffer();
+            _data = playerMStream.ToArray();
         }
 
         /// <summary>
@@ -60,20 +57,20 @@ public class NetworkManager : MonoBehaviour
             //position
             Vector3 newPosition = new()
             {
-                x = (float)playerBReader.ReadDouble(),
-                y = (float)playerBReader.ReadDouble(),
-                z = (float)playerBReader.ReadDouble()
+                x = playerBReader.ReadSingle(),
+                y = playerBReader.ReadSingle(),
+                z = playerBReader.ReadSingle()
             };
-            playerBHToModify.SetPosition(newPosition);
+            _position = newPosition;
 
             // rotation
             Vector3 newERotation = new()
             {
-                x = (float)playerBReader.ReadDouble(),
-                y = (float)playerBReader.ReadDouble(),
-                z = (float)playerBReader.ReadDouble()
+                x = playerBReader.ReadSingle(),
+                y = playerBReader.ReadSingle(),
+                z = playerBReader.ReadSingle()
             };
-            playerBHToModify.SetRotation(Quaternion.Euler(newERotation));
+            _rotation = Quaternion.Euler(newERotation);
 
             // HP
             // score
@@ -82,7 +79,15 @@ public class NetworkManager : MonoBehaviour
         public byte[] GetBuffer()
         { return _data; }
 
+        public Vector3 GetPosition()
+        { return _position; }
+
+        public Quaternion GetRotation()
+        { return _rotation; }
+
         private readonly byte[] _data;
+        private Vector3 _position = new();
+        private Quaternion _rotation = new();
     }
 
     private void Start()
@@ -123,7 +128,8 @@ public class NetworkManager : MonoBehaviour
 
             if (recv == 0) continue;
 
-            _ = new PlayerPacket(data, gameManager.GetRemote(), playerManager.GetRemote());
+            PlayerPacket packet = new(data, gameManager.GetRemote(), playerManager.GetRemote());
+            playerManager.SetNetPosition(packet.GetPosition());
         }
     }
 }

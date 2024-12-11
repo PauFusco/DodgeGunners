@@ -39,6 +39,9 @@ public class GameManager : MonoBehaviour
         public UInt16 GetScore()
         { return _score; }
 
+        public UInt16 GetHP()
+        { return _hp; }
+
         private readonly string _username;
         private readonly EndPoint _endpoint;
         private readonly Socket _usedSocket;
