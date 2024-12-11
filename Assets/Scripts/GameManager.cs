@@ -7,23 +7,7 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
-    public class NETFLAGS
-    {
-        public NETFLAGS()
-        {
-            player = false;
-            projectiles = false;
-            score = false;
-            gameTime = false;
-        }
-
-        public bool player;
-        public bool projectiles;
-        public bool score;
-        public bool gameTime;
-    }
-
-    public class Player
+    public class NetPlayer
     {
         public enum Type
         {
@@ -32,7 +16,7 @@ public class GameManager : MonoBehaviour
             REMOTE
         }
 
-        public Player(string username, EndPoint endpoint, Type type, Socket socket)
+        public NetPlayer(string username, EndPoint endpoint, Type type, Socket socket)
         {
             _username = username;
             _endpoint = endpoint;
@@ -55,31 +39,33 @@ public class GameManager : MonoBehaviour
         public UInt16 GetScore()
         { return _score; }
 
+        public UInt16 GetHP()
+        { return _hp; }
+
         private readonly string _username;
         private readonly EndPoint _endpoint;
         private readonly Socket _usedSocket;
         private readonly Type _type;
         private readonly UInt16 _score;
+        private readonly UInt16 _hp;
     }
 
-    private Player remote;
-    private Player local;
-
-    private NETFLAGS _flags;
+    private NetPlayer remote;
+    private NetPlayer local;
 
     private void Awake()
     { DontDestroyOnLoad(transform.gameObject); }
 
-    public void AddRemote(string username, EndPoint ep, Player.Type type, Socket socket)
+    public void AddRemote(string username, EndPoint ep, NetPlayer.Type type, Socket socket)
     { remote = new(username, ep, type, socket); }
 
-    public void SetLocal(string username, Player.Type type)
+    public void SetLocal(string username, NetPlayer.Type type)
     { local = new(username, null, type, null); }
 
-    public Player GetRemote()
+    public NetPlayer GetRemote()
     { return remote; }
 
-    public Player GetLocal()
+    public NetPlayer GetLocal()
     { return local; }
 
     public void ClearRemote()
