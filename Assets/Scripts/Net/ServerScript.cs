@@ -43,8 +43,11 @@ public class ServerScript : MonoBehaviour
         public string GetUsername()
         { return _username; }
 
-        private string _username;
-        private IPAddress _address;
+        public IPAddress GetIP()
+        { return _address; }
+
+        private readonly string _username;
+        private readonly IPAddress _address;
     }
 
     private Socket socket;
