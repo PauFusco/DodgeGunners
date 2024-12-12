@@ -23,8 +23,13 @@ public class CreateLobby : MonoBehaviour
     private string debugText;
     private bool startGame = false;
 
+    private IPAddress serverIP;
+
     private void Start()
     {
+        // Put server IP here
+        serverIP = IPAddress.Parse("192.168.1.131");
+
         createButton = createObj.GetComponent<Button>();
         startButton = startObj.GetComponent<Button>();
         log = logObj.GetComponent<TextMeshProUGUI>();
@@ -57,15 +62,6 @@ public class CreateLobby : MonoBehaviour
         newConnectionCheck.Start();
     }
 
-    private void LobbyStart()
-    {
-        byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
-
-        socket.SendTo(startGame, gameManager.GetRemote().GetEndPoint());
-
-        SceneManager.LoadScene(1);
-    }
-
     private void CheckNewPlayers()
     {
         byte[] data = new byte[1024];
@@ -93,6 +89,15 @@ public class CreateLobby : MonoBehaviour
 
             startGame = true;
         }
+    }
+
+    private void LobbyStart()
+    {
+        byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
+
+        socket.SendTo(startGame, gameManager.GetRemote().GetEndPoint());
+
+        SceneManager.LoadScene(1);
     }
 
     public void CopyIP()
