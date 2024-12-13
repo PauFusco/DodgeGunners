@@ -20,6 +20,7 @@ public class CreateLobby : MonoBehaviour
 
     private Socket socket;
 
+    private int roomCode;
     private string debugText;
     private bool startGame = false;
 
@@ -29,6 +30,7 @@ public class CreateLobby : MonoBehaviour
     {
         // Put server IP here
         serverIP = IPAddress.Parse("192.168.1.131");
+        roomCode = -1;
 
         createButton = createObj.GetComponent<Button>();
         startButton = startObj.GetComponent<Button>();
@@ -57,6 +59,27 @@ public class CreateLobby : MonoBehaviour
         gameManager.ClearRemote();
 
         debugText = "Lobby Created";
+
+        IPEndPoint serverIPEP = new(serverIP, 9050);
+        byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
+        socket.SendTo(username, serverIPEP);
+
+        Thread checkRoomCode = new(CheckServerResponseCode);
+        checkRoomCode.Start();
+    }
+
+    private void CheckServerResponseCode()
+    {
+        byte[] data = new byte[1024];
+        int recv;
+
+        IPEndPoint sender = new(IPAddress.Any, 0);
+        EndPoint remote = sender;
+
+        while (roomCode == -1)
+        {
+            recv = socket.ReceiveFrom(data, ref remote);
+        }
 
         Thread newConnectionCheck = new(CheckNewPlayers);
         newConnectionCheck.Start();

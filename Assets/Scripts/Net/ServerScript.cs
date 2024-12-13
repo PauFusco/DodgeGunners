@@ -16,9 +16,9 @@ public class ServerScript : MonoBehaviour
             _roomcode = (UInt16)UnityEngine.Random.Range(0, 65535);
         }
 
-        public void AddPlayer(string username, IPAddress address)
+        public void AddPlayer(string username, IPEndPoint ipep)
         {
-            Player newPlayer = new(username, address);
+            Player newPlayer = new(username, ipep);
             _players.Add(newPlayer);
         }
 
@@ -34,28 +34,31 @@ public class ServerScript : MonoBehaviour
 
     private class Player
     {
-        public Player(string username, IPAddress address)
+        public Player(string username, IPEndPoint ipep)
         {
             _username = username;
-            _address = address;
+            _ipendpoint = ipep;
         }
 
         public string GetUsername()
         { return _username; }
 
-        public IPAddress GetIP()
-        { return _address; }
+        public IPEndPoint GetIPEndPoint()
+        { return _ipendpoint; }
 
         private readonly string _username;
-        private readonly IPAddress _address;
+        private IPEndPoint _ipendpoint;
     }
 
     private Socket socket;
     private Room room;
+    private bool hostOnline;
 
     private void Start()
     {
         room = new();
+
+        hostOnline = false;
 
         IPEndPoint ipep = new(IPAddress.Any, 9050);
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -70,8 +73,6 @@ public class ServerScript : MonoBehaviour
 
     private void CheckConnections()
     {
-        bool hostOnline = false;
-
         byte[] data = new byte[1024];
         int recv;
 
@@ -86,7 +87,7 @@ public class ServerScript : MonoBehaviour
 
             IPEndPoint ipep = (IPEndPoint)remote;
 
-            room.AddPlayer(Encoding.ASCII.GetString(data, 0, recv), ipep.Address);
+            room.AddPlayer(Encoding.ASCII.GetString(data, 0, recv), ipep);
 
             if (!hostOnline)
             {
@@ -96,6 +97,11 @@ public class ServerScript : MonoBehaviour
             }
             else
             {
+                byte[] hostIP = Encoding.ASCII.GetBytes(room._players[0].GetIPEndPoint().Address.ToString());
+                byte[] guestIP = Encoding.ASCII.GetBytes(room._players[1].GetIPEndPoint().Address.ToString());
+
+                socket.SendTo(guestIP, room._players[0].GetIPEndPoint());
+                socket.SendTo(hostIP, room._players[1].GetIPEndPoint());
             }
         }
     }

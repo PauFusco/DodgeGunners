@@ -24,8 +24,13 @@ public class JoinLobby : MonoBehaviour
     private TextMeshProUGUI log;
     private string debugText;
 
+    private IPAddress serverIP;
+
     private void Start()
     {
+        // Put server IP here
+        serverIP = IPAddress.Parse("192.168.1.131");
+
         startGame = false;
 
         join = joinObj.GetComponent<Button>();

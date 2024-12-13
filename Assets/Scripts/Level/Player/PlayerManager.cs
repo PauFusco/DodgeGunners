@@ -43,7 +43,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        CheckKeyMovement(local);
+        CheckKeys(local);
     }
 
     private void FixedUpdate()
@@ -52,12 +52,12 @@ public class PlayerManager : MonoBehaviour
         remote.SetPosition(tempNetPos);
     }
 
-    private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
+    private void CheckKeys(PlayerBehaviour localPlayerToCheck)
     {
-        if (Input.GetKey(KeyCode.W)) localPlayerToMove.MoveUp();
-        if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
-        if (Input.GetKey(KeyCode.S)) localPlayerToMove.MoveDown();
-        if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
+        if (Input.GetKey(KeyCode.W)) localPlayerToCheck.MoveUp();
+        if (Input.GetKey(KeyCode.A)) localPlayerToCheck.MoveLeft();
+        if (Input.GetKey(KeyCode.S)) localPlayerToCheck.MoveDown();
+        if (Input.GetKey(KeyCode.D)) localPlayerToCheck.MoveRight();
     }
 
     public void SetNetPosition(Vector3 pos)
