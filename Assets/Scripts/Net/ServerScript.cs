@@ -53,7 +53,6 @@ public class ServerScript : MonoBehaviour
     private Socket socket;
     private Room room;
 
-    // Start is called before the first frame update
     private void Start()
     {
         room = new();
@@ -63,7 +62,6 @@ public class ServerScript : MonoBehaviour
         socket.Bind(ipep);
     }
 
-    // Update is called once per frame
     private void Update()
     {
         Thread newConnectionsCheck = new(CheckConnections);
