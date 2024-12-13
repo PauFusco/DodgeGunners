@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
 using System.IO;
+using System;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -88,6 +89,19 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
+    }
+
+    public class ProjectilePacket
+    {
+        public ProjectilePacket()
+        {
+        }
+
+        private class ProjectileInfo
+        {
+            private Vector3 spawnPos;
+            private int frame;
+        }
     }
 
     private void Start()
