@@ -80,14 +80,14 @@ public class CreateLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            string message = Encoding.ASCII.GetString(data, 0, recv);
+            string message = Encoding.UTF8.GetString(data, 0, recv);
             debugText = message + " Just Joined!";
 
             gameManager.AddRemote(message, remote, GameManager.NetPlayer.Type.REMOTE, socket);
 
             gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.HOST);
 
-            byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
+            byte[] username = Encoding.UTF8.GetBytes(usernameInput.text);
 
             socket.SendTo(username, gameManager.GetRemote().GetEndPoint());
 

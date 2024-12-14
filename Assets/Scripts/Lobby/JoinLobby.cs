@@ -59,7 +59,7 @@ public class JoinLobby : MonoBehaviour
         gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.REMOTE);
 
         byte[] username = new byte[1024];
-        username = Encoding.ASCII.GetBytes(usernameInput.text);
+        username = Encoding.UTF8.GetBytes(usernameInput.text);
 
         socket.SendTo(username, hostIPEP);
 
@@ -79,9 +79,9 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            gameManager.AddRemote(Encoding.ASCII.GetString(data, 0, recv), hostIPEP, GameManager.NetPlayer.Type.HOST, socket);
+            gameManager.AddRemote(Encoding.UTF8.GetString(data, 0, recv), hostIPEP, GameManager.NetPlayer.Type.HOST, socket);
 
-            debugText = "You have joined " + Encoding.ASCII.GetString(data, 0, recv) + "'s lobby!";
+            debugText = "You have joined " + Encoding.UTF8.GetString(data, 0, recv) + "'s lobby!";
 
             Thread checkGameStart = new(RecieveGameStart);
             checkGameStart.Start();
