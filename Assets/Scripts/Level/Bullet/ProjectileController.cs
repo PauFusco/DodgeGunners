@@ -58,10 +58,6 @@ public class ProjectileController : MonoBehaviour
     private List<Projectile> localProjectiles = new();
     private List<Projectile> remoteProjectiles = new();
 
-    private void Start()
-    {
-    }
-
     private void Update()
     {
         foreach (Projectile proj in localProjectiles)
@@ -109,4 +105,7 @@ public class ProjectileController : MonoBehaviour
 
     public List<Projectile> GetLocalProjectiles()
     { return localProjectiles; }
+
+    public List<Projectile> GetRemoteProjectiles()
+    { return remoteProjectiles; }
 }
