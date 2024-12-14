@@ -54,9 +54,9 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
     {
-        if (Input.GetKey(KeyCode.W)) localPlayerToMove.MoveUp();
+        if (Input.GetKeyDown(KeyCode.W)) localPlayerToMove.MoveUp();
         if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
-        if (Input.GetKey(KeyCode.S)) localPlayerToMove.MoveDown();
+        if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
     }
 
