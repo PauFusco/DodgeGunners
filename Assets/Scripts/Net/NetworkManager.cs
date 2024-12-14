@@ -4,13 +4,15 @@ using System.Threading;
 using UnityEngine;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject playerManagerObj;
+    private GameObject playerManagerObj, projectileControllerObj;
 
     private PlayerManager playerManager;
+    private ProjectileController projectileController;
     private GameManager gameManager;
 
     public class PlayerPacket
@@ -77,6 +79,10 @@ public class NetworkManager : MonoBehaviour
             // score
         }
 
+        private readonly byte[] _data;
+        private Vector3 _position = new();
+        private Quaternion _rotation = new();
+
         public byte[] GetBuffer()
         { return _data; }
 
@@ -85,28 +91,82 @@ public class NetworkManager : MonoBehaviour
 
         public Quaternion GetRotation()
         { return _rotation; }
-
-        private readonly byte[] _data;
-        private Vector3 _position = new();
-        private Quaternion _rotation = new();
     }
 
-    public class ProjectilePacket
+    public class ProjectilesPacket
     {
-        public ProjectilePacket()
+        public class MockProjectile
         {
+            public MockProjectile(Vector3 spawnPos, float spawnTime)
+            {
+                _spawnpos = spawnPos;
+                _spawntime = spawnTime;
+            }
+
+            public Vector3 GetSawnPos()
+            { return _spawnpos; }
+
+            public float GetSpawnTime()
+            { return _spawntime; }
+
+            private Vector3 _spawnpos;
+            private float _spawntime;
         }
 
-        private class ProjectileInfo
+        public ProjectilesPacket(List<ProjectileController.Projectile> projectileList)
         {
-            private Vector3 spawnPos;
-            private int frame;
+            MemoryStream projectileMStream = new();
+            BinaryWriter projectileBWriter = new(projectileMStream);
+
+            projectileBWriter.Write(projectileList.Count);
+
+            foreach (ProjectileController.Projectile proj in projectileList)
+            {
+                projectileBWriter.Write(proj.GetSpawnPosition().x);
+                projectileBWriter.Write(proj.GetSpawnPosition().y);
+                projectileBWriter.Write(proj.GetSpawnPosition().z);
+
+                projectileBWriter.Write(proj.GetSpawnTime());
+            }
+
+            _data = projectileMStream.ToArray();
         }
+
+        public ProjectilesPacket(byte[] data, Vector3 spawnpos)
+        {
+            MemoryStream projectileMStream = new(data);
+            BinaryReader projectileBReader = new(projectileMStream);
+
+            int listSize = projectileBReader.ReadInt32();
+
+            for (int i = 0; i < listSize; i++)
+            {
+                float tempx = projectileBReader.ReadSingle();
+                float tempy = projectileBReader.ReadSingle();
+                float tempz = projectileBReader.ReadSingle();
+
+                float spawntime = projectileBReader.ReadSingle();
+
+                Vector3 tempSpawn = new(tempx, tempy, tempz);
+
+                MockProjectile temp = new(tempSpawn, spawntime);
+                _netprojectiles.Add(temp);
+            }
+        }
+
+        private byte[] _data;
+        private Vector3 _spawnpos;
+        private List<MockProjectile> _netprojectiles;
+
+        public List<MockProjectile> GetNetProjectiles()
+        { return _netprojectiles; }
     }
 
     private void Start()
     {
         playerManager = playerManagerObj.GetComponent<PlayerManager>();
+        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
+
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         Thread receiveNetMovement = new(RecieveNetInfo);

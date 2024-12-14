@@ -3,11 +3,12 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject hostObj, remoteObj, networkManagerObj;
+    private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
 
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
+    private ProjectileController projectileController;
 
     private bool localIsHost;
 
