@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerBehaviour : MonoBehaviour
 {
     public float m_speed = 1.0f;
-    private readonly UInt16 _score;
 
     [SerializeField]
     private TextMeshProUGUI playerBillboard;

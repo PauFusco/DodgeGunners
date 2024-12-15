@@ -99,27 +99,18 @@ public class NetworkManager : MonoBehaviour
     {
         public class MockProjectile
         {
-            public MockProjectile(Vector3 spawnPos, float spawnTime, float lifeTime)
+            public MockProjectile(Vector3 position)
             {
-                _spawnpos = spawnPos;
-                _spawntime = spawnTime;
-                _lifetime = lifeTime;
+                _position = position;
             }
 
             public Vector3 GetSpawnPos()
-            { return _spawnpos; }
+            { return _position; }
 
-            public float GetSpawnTime()
-            { return _spawntime; }
-
-            public float GetLifetime()
-            { return _lifetime; }
-
-            private Vector3 _spawnpos;
-            private readonly float _spawntime, _lifetime;
+            private Vector3 _position;
         }
 
-        public ProjectilesPacket(List<ProjectileController.Projectile> projectileList)
+        public ProjectilesPacket(List<ProjectileController.LocalProjectile> projectileList)
         {
             _type = PacketType.PROJECTILE;
 
@@ -130,16 +121,11 @@ public class NetworkManager : MonoBehaviour
 
             projectileBWriter.Write(projectileList.Count);
 
-            foreach (ProjectileController.Projectile proj in projectileList)
+            foreach (ProjectileController.LocalProjectile proj in projectileList)
             {
-                projectileBWriter.Write(proj.GetSpawnPosition().x);
-                projectileBWriter.Write(proj.GetSpawnPosition().y);
-                projectileBWriter.Write(proj.GetSpawnPosition().z);
-
-                projectileBWriter.Write(proj.GetSpawnTime());
-
-                float lifetime = Time.time - proj.GetSpawnTime();
-                projectileBWriter.Write(lifetime);
+                projectileBWriter.Write(proj.projectileObj.transform.position.x);
+                projectileBWriter.Write(proj.projectileObj.transform.position.y);
+                projectileBWriter.Write(proj.projectileObj.transform.position.z);
             }
 
             _data = projectileMStream.ToArray();
@@ -159,13 +145,9 @@ public class NetworkManager : MonoBehaviour
                 float tempx = projectileBReader.ReadSingle();
                 float tempy = projectileBReader.ReadSingle();
                 float tempz = projectileBReader.ReadSingle();
-                Vector3 tempSpawn = new(tempx, tempy, tempz);
+                Vector3 tempPos = new(tempx, tempy, tempz);
 
-                float spawntime = projectileBReader.ReadSingle();
-
-                float lifetime = projectileBReader.ReadSingle();
-
-                MockProjectile temp = new(tempSpawn, spawntime, lifetime);
+                MockProjectile temp = new(tempPos);
                 _netprojectiles.Add(temp);
             }
         }
@@ -211,7 +193,7 @@ public class NetworkManager : MonoBehaviour
         else socket.Send(localPacket.GetBuffer());
     }
 
-    public void SendProjectilesNetInfo(List<ProjectileController.Projectile> projectiles)
+    public void SendProjectilesNetInfo(List<ProjectileController.LocalProjectile> projectiles)
     {
         ProjectilesPacket localPacket = new(projectiles);
 

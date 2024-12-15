@@ -7,7 +7,7 @@ public class ProjectileController : MonoBehaviour
     [SerializeField]
     private Object projectilePF;
 
-    public class Projectile
+    public class LocalProjectile
     {
         private readonly float _lifetimelimit, _speed, _spawntime;
 
@@ -16,7 +16,7 @@ public class ProjectileController : MonoBehaviour
 
         public GameObject projectileObj;
 
-        public Projectile(Vector3 spawnPos)
+        public LocalProjectile(Vector3 spawnPos)
         {
             _lifetimelimit = 1.0f;
             _speed = 0.5f;
@@ -25,21 +25,6 @@ public class ProjectileController : MonoBehaviour
 
             _spawnposition = spawnPos;
             _spawntocurrentposition = spawnPos;
-        }
-
-        public Projectile(Vector3 spawnPos, float spawnTime)
-        {
-            _lifetimelimit = 1.0f;
-            _speed = 0.5f;
-            _spawntime = spawnTime;
-
-            float currentLifeTime = Time.time - spawnTime;
-
-            if (currentLifeTime >= _lifetimelimit) return;
-
-            Vector3 newPos = spawnPos;
-            newPos.z += spawnPos.z <= 0 ? _speed * currentLifeTime : -_speed * currentLifeTime;
-            _spawntocurrentposition = newPos;
         }
 
         public float GetLifetimeLimit()
@@ -58,13 +43,24 @@ public class ProjectileController : MonoBehaviour
         { return _spawntocurrentposition; }
     }
 
+    public class RemoteProjectile
+    {
+        public GameObject _projectileobj;
+
+        public RemoteProjectile(Vector3 position, GameObject projectileObj)
+        {
+            _projectileobj = projectileObj;
+            _projectileobj.transform.position = position;
+        }
+    }
+
     [SerializeField]
     private GameObject networkManagerObj;
 
     private NetworkManager networkManager;
 
-    private readonly List<Projectile> localProjectiles = new();
-    private readonly List<Projectile> remoteProjectiles = new();
+    private readonly List<LocalProjectile> localProjectiles = new();
+    private readonly List<RemoteProjectile> remoteProjectiles = new();
 
     private void Start()
     {
@@ -90,27 +86,39 @@ public class ProjectileController : MonoBehaviour
 
             proj.projectileObj.transform.position = newPos;
         }
+    }
 
-        for (int i = remoteProjectiles.Count - 1; i >= 0; i--)
+    private void FixedUpdate()
+    {
+        networkManager.SendProjectilesNetInfo(localProjectiles);
+
+        ClearRemoteProjectiles();
+
+        if (networkManager.GetNetProjectiles().Count > 0)
         {
-            var proj = remoteProjectiles[i];
-            float currentLifetime = Time.time - proj.GetSpawnTime();
-            if (currentLifetime >= proj.GetLifetimeLimit())
+            foreach (var proj in networkManager.GetNetProjectiles())
             {
-                Destroy(proj.projectileObj);
-                remoteProjectiles.RemoveAt(i);
-                continue;
+                RemoteProjectile temp = new(proj.GetSpawnPos(), (GameObject)Instantiate(projectilePF));
+                remoteProjectiles.Add(temp);
             }
 
-            Vector3 newPos = proj.projectileObj.transform.position;
-            newPos.z += proj.GetSpawnPosition().z <= 0 ? proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
-            proj.projectileObj.transform.position = newPos;
+            networkManager.GetNetProjectiles().Clear();
         }
+    }
+
+    private void ClearRemoteProjectiles()
+    {
+        foreach (var proj in remoteProjectiles)
+        {
+            Destroy(proj._projectileobj);
+        }
+
+        remoteProjectiles.Clear();
     }
 
     public void LocalSpawnProjectile(Vector3 pos)
     {
-        Projectile proj = new(pos);
+        LocalProjectile proj = new(pos);
         proj.projectileObj =
             (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), Quaternion.identity);
 
