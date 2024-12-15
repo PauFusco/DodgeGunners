@@ -6,6 +6,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System;
+
+internal enum LobbyMessageType
+{
+    CREATE,
+    JOIN,
+    DEFAULT
+}
 
 public class CreateLobby : MonoBehaviour
 {
@@ -65,8 +74,17 @@ public class CreateLobby : MonoBehaviour
         debugText = "Lobby Created";
 
         IPEndPoint serverIPEP = new(serverIP, 9050);
-        byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
-        socket.SendTo(username, serverIPEP);
+
+        MemoryStream usernameMS = new();
+        BinaryWriter BW = new(usernameMS);
+
+        LobbyMessageType type = LobbyMessageType.CREATE;
+        BW.Write((int)type);
+        BW.Write(usernameInput.text);
+
+        socket.SendTo(usernameMS.ToArray(), serverIPEP);
+
+        debugText = "Creating Room...";
 
         Thread checkRoomCode = new(CheckServerResponseCode);
         checkRoomCode.Start();
@@ -83,6 +101,10 @@ public class CreateLobby : MonoBehaviour
         while (roomCode == -1)
         {
             recv = socket.ReceiveFrom(data, ref remote);
+
+            if (recv == 0) continue;
+
+            roomCode = (UInt16)BitConverter.ToInt16(data, 0);
         }
 
         Thread newConnectionCheck = new(CheckNewPlayers);

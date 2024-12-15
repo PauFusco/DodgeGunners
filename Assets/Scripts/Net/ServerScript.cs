@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -48,29 +49,57 @@ public class ServerScript : MonoBehaviour
         { return _ipendpoint; }
 
         private readonly string _username;
-        private IPEndPoint _ipendpoint;
+        private readonly IPEndPoint _ipendpoint;
     }
 
+    private readonly List<Room> rooms = new();
+
     private Socket socket;
-    private Room room;
-    private bool hostOnline;
 
     private void Start()
     {
-        room = new();
-
-        hostOnline = false;
-
         IPEndPoint ipep = new(IPAddress.Any, 9050);
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         socket.Bind(ipep);
-    }
 
-    private void Update()
-    {
         Thread newConnectionsCheck = new(CheckConnections);
         newConnectionsCheck.Start();
     }
+
+    //private void CheckConnections()
+    //{
+    //    byte[] data = new byte[1024];
+    //    int recv;
+
+    //    IPEndPoint sender = new(IPAddress.Any, 0);
+    //    EndPoint remote = sender;
+
+    //    while (room.GetSize() < 2)
+    //    {
+    //        recv = socket.ReceiveFrom(data, ref remote);
+
+    //        if (recv == 0) continue;
+
+    //        IPEndPoint ipep = (IPEndPoint)remote;
+
+    //        room.AddPlayer(Encoding.ASCII.GetString(data, 0, recv), ipep);
+
+    //        if (!hostOnline)
+    //        {
+    //            byte[] roomCode = Encoding.ASCII.GetBytes(room.GetCode().ToString());
+    //            socket.SendTo(roomCode, remote);
+    //            hostOnline = true;
+    //        }
+    //        else
+    //        {
+    //            byte[] hostIP = Encoding.ASCII.GetBytes(room._players[0].GetIPEndPoint().Address.ToString());
+    //            byte[] guestIP = Encoding.ASCII.GetBytes(room._players[1].GetIPEndPoint().Address.ToString());
+
+    //            socket.SendTo(guestIP, room._players[0].GetIPEndPoint());
+    //            socket.SendTo(hostIP, room._players[1].GetIPEndPoint());
+    //        }
+    //    }
+    //}
 
     private void CheckConnections()
     {
@@ -80,30 +109,44 @@ public class ServerScript : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
-        while (room.GetSize() < 2)
+        while (true)
         {
             recv = socket.ReceiveFrom(data, ref remote);
 
             if (recv == 0) continue;
 
-            IPEndPoint ipep = (IPEndPoint)remote;
+            MemoryStream message = new(data);
+            BinaryReader messageBR = new(message);
 
-            room.AddPlayer(Encoding.ASCII.GetString(data, 0, recv), ipep);
+            LobbyMessageType messageType = (LobbyMessageType)messageBR.ReadInt32();
 
-            if (!hostOnline)
+            switch (messageType)
             {
-                byte[] roomCode = Encoding.ASCII.GetBytes(room.GetCode().ToString());
-                socket.SendTo(roomCode, remote);
-                hostOnline = true;
-            }
-            else
-            {
-                byte[] hostIP = Encoding.ASCII.GetBytes(room._players[0].GetIPEndPoint().Address.ToString());
-                byte[] guestIP = Encoding.ASCII.GetBytes(room._players[1].GetIPEndPoint().Address.ToString());
+                case LobbyMessageType.CREATE:
+                    string username = messageBR.ReadString();
+                    Debug.Log(username);
+                    Room newRoom = CreateNewRoom(username, (IPEndPoint)remote);
 
-                socket.SendTo(guestIP, room._players[0].GetIPEndPoint());
-                socket.SendTo(hostIP, room._players[1].GetIPEndPoint());
+                    socket.SendTo(Encoding.ASCII.GetBytes(newRoom.GetCode().ToString()), remote);
+
+                    break;
+
+                case LobbyMessageType.JOIN:
+                    break;
+
+                case LobbyMessageType.DEFAULT:
+                    break;
             }
         }
+    }
+
+    private Room CreateNewRoom(string hostUsername, IPEndPoint hostIPEP)
+    {
+        Room newRoom = new();
+        rooms.Add(newRoom);
+
+        newRoom.AddPlayer(hostUsername, hostIPEP);
+
+        return newRoom;
     }
 }
