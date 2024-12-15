@@ -16,6 +16,8 @@ public class ProjectileController : MonoBehaviour
 
         public GameObject projectileObj;
 
+        public bool IsDestroyed { get; private set; } = false;
+
         public LocalProjectile(Vector3 spawnPos)
         {
             _lifetimelimit = 1.0f;
@@ -41,6 +43,9 @@ public class ProjectileController : MonoBehaviour
 
         public Vector3 GetSpawnToCurrentPosition()
         { return _spawntocurrentposition; }
+
+        public void MarkAsDestroyed() 
+        { IsDestroyed = true; }
     }
 
     public class RemoteProjectile
@@ -72,6 +77,12 @@ public class ProjectileController : MonoBehaviour
         for (int i = localProjectiles.Count - 1; i >= 0; i--)
         {
             var proj = localProjectiles[i];
+            if (proj.projectileObj == null)
+            {
+                localProjectiles.RemoveAt(i);
+                continue;
+            }
+
             float currentLifetime = Time.time - proj.GetSpawnTime();
             if (currentLifetime >= proj.GetLifetimeLimit())
             {

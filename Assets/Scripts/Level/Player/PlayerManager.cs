@@ -13,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     private bool localIsHost;
 
     private Vector3 tempNetPos;
+    public int bulletOffset;
 
     private void Start()
     {
@@ -61,7 +62,7 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
 
-        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(local.transform.position);
+        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
     }
 
     public void SetNetPosition(Vector3 pos)
@@ -75,4 +76,12 @@ public class PlayerManager : MonoBehaviour
 
     public PlayerBehaviour GetRemote()
     { return remote; }
+
+    public Vector3 GetBulletDirection()
+    {
+        if (local.transform.position.z < 0)
+            return new Vector3(local.transform.position.x, local.transform.position.y, local.transform.position.z + bulletOffset);
+        else
+            return new Vector3(local.transform.position.x, local.transform.position.y, local.transform.position.z - bulletOffset);
+    }
 }
