@@ -99,15 +99,20 @@ public class NetworkManager : MonoBehaviour
     {
         public class MockProjectile
         {
-            public MockProjectile(Vector3 position)
+            public MockProjectile(Vector3 position, Quaternion rotation)
             {
                 _position = position;
+                _rotation = rotation;
             }
 
-            public Vector3 GetSpawnPos()
+            public Vector3 GetPosition()
             { return _position; }
 
+            public Quaternion GetRotation()
+            { return _rotation; }
+
             private Vector3 _position;
+            private Quaternion _rotation;
         }
 
         public ProjectilesPacket(List<ProjectileController.LocalProjectile> projectileList)
@@ -126,6 +131,11 @@ public class NetworkManager : MonoBehaviour
                 projectileBWriter.Write(proj.projectileObj.transform.position.x);
                 projectileBWriter.Write(proj.projectileObj.transform.position.y);
                 projectileBWriter.Write(proj.projectileObj.transform.position.z);
+
+                projectileBWriter.Write(proj.projectileObj.transform.rotation.w);
+                projectileBWriter.Write(proj.projectileObj.transform.rotation.x);
+                projectileBWriter.Write(proj.projectileObj.transform.rotation.y);
+                projectileBWriter.Write(proj.projectileObj.transform.rotation.z);
             }
 
             _data = projectileMStream.ToArray();
@@ -147,7 +157,13 @@ public class NetworkManager : MonoBehaviour
                 float tempz = projectileBReader.ReadSingle();
                 Vector3 tempPos = new(tempx, tempy, tempz);
 
-                MockProjectile temp = new(tempPos);
+                float tempw = projectileBReader.ReadSingle();
+                tempx = projectileBReader.ReadSingle();
+                tempy = projectileBReader.ReadSingle();
+                tempz = projectileBReader.ReadSingle();
+                Quaternion tempRot = new(tempx, tempy, tempz, tempw);
+
+                MockProjectile temp = new(tempPos, tempRot);
                 _netprojectiles.Add(temp);
             }
         }

@@ -94,11 +94,13 @@ public class ProjectileController : MonoBehaviour
 
         ClearRemoteProjectiles();
 
+        Quaternion rotation = new(0.7071068f, 0, 0, 0.7071068f);
+
         if (networkManager.GetNetProjectiles().Count > 0)
         {
             foreach (var proj in networkManager.GetNetProjectiles())
             {
-                RemoteProjectile temp = new(proj.GetSpawnPos(), (GameObject)Instantiate(projectilePF));
+                RemoteProjectile temp = new(proj.GetPosition(), (GameObject)Instantiate(projectilePF, proj.GetPosition(), rotation));
                 remoteProjectiles.Add(temp);
             }
 
@@ -118,9 +120,10 @@ public class ProjectileController : MonoBehaviour
 
     public void LocalSpawnProjectile(Vector3 pos)
     {
+        Quaternion rotation = new(0.7071068f, 0, 0, 0.7071068f);
+
         LocalProjectile proj = new(pos);
-        proj.projectileObj =
-            (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), Quaternion.identity);
+        proj.projectileObj = (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), rotation);
 
         localProjectiles.Add(proj);
     }
