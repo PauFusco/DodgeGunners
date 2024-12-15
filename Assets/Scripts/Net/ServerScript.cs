@@ -14,6 +14,7 @@ public class ServerScript : MonoBehaviour
         public Room()
         {
             _roomcode = (UInt16)UnityEngine.Random.Range(0, 65535);
+            _players = new List<Player>();
         }
 
         public void AddPlayer(string username, IPEndPoint ipep)
