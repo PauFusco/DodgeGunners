@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
+    [SerializeField]
     private Object projectileObj;
 
     public class Projectile
     {
-        private readonly float baseLifeTimeLimit, baseSpeed, _lifetimelimit, _speed, _spawntime;
+        private readonly float baseLifeTimeLimit = 1.0f, baseSpeed = 1.0f, _lifetimelimit = 1.0f, _speed = 1.0f, _spawntime = 1.0f;
 
         private Vector3 _spawnposition;
         private Vector3 _spawntocurrentposition;
@@ -63,8 +64,9 @@ public class ProjectileController : MonoBehaviour
         foreach (var proj in localProjectiles)
         {
             float currentLifetime = Time.time - proj.GetSpawnTime();
-            if (currentLifetime <= 0)
+            if (currentLifetime >= proj.GetLifetimeLimit())
             {
+                Destroy(proj.projectileObj);
                 localProjectiles.Remove(proj);
                 continue;
             }
@@ -78,8 +80,9 @@ public class ProjectileController : MonoBehaviour
         foreach (var proj in remoteProjectiles)
         {
             float currentLifetime = Time.time - proj.GetSpawnTime();
-            if (currentLifetime <= 0)
+            if (currentLifetime >= proj.GetLifetimeLimit())
             {
+                Destroy(proj.projectileObj);
                 localProjectiles.Remove(proj);
                 continue;
             }
