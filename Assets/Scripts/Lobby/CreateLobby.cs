@@ -22,6 +22,7 @@ public class CreateLobby : MonoBehaviour
 
     private int roomCode;
     private string debugText;
+    private string roomText;
     private bool startGame = false;
 
     private IPAddress serverIP;
@@ -31,6 +32,7 @@ public class CreateLobby : MonoBehaviour
         // Put server IP here
         serverIP = IPAddress.Parse("192.168.1.131");
         roomCode = -1;
+        roomText = "";
 
         createButton = createObj.GetComponent<Button>();
         startButton = startObj.GetComponent<Button>();
@@ -47,6 +49,8 @@ public class CreateLobby : MonoBehaviour
     private void Update()
     {
         log.text = debugText;
+        hostIP.text = roomText;
+        hostIP.text = roomCode.ToString();
         startButton.interactable = startGame;
     }
 
