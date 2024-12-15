@@ -14,6 +14,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private readonly UInt16 _score;
 
+
     [SerializeField]
     private TextMeshProUGUI playerBillboard;
 

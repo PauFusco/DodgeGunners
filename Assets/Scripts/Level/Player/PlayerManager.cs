@@ -3,11 +3,12 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject hostObj, remoteObj, networkManagerObj;
+    private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
 
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
+    private ProjectileController projectileController;
 
     private bool localIsHost;
 
@@ -17,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     {
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
 
         if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.REMOTE)
         {
@@ -48,7 +50,7 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        networkManager.SendNetInfo(local);
+        networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
     }
 
@@ -58,6 +60,8 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
         if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
+
+        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(local.transform.position);
     }
 
     public void SetNetPosition(Vector3 pos)
