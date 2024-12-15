@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        networkManager.SendNetInfo(local);
+        networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
     }
 

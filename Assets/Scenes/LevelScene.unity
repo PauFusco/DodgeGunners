@@ -1548,7 +1548,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerManagerObj: {fileID: 509654361}
-  projectileControllerObj: {fileID: 1933982319}
 --- !u!1 &1904642269 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5499614588063291116, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
@@ -1658,7 +1657,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a85806795382b6141a9195bfc871951f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileObj: {fileID: 8456960401558362709, guid: 26b114f4353011c468a3d7397f45627e, type: 3}
+  projectilePF: {fileID: 8456960401558362709, guid: 26b114f4353011c468a3d7397f45627e, type: 3}
+  networkManagerObj: {fileID: 1805400979}
 --- !u!4 &1933982321
 Transform:
   m_ObjectHideFlags: 0

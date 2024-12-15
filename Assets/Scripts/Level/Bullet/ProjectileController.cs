@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
     [SerializeField]
-    private Object projectileObj;
+    private Object projectilePF;
 
     public class Projectile
     {
-        private readonly float baseLifeTimeLimit = 1.0f, baseSpeed = 1.0f, _lifetimelimit = 1.0f, _speed = 1.0f, _spawntime = 1.0f;
+        private readonly float _lifetimelimit, _speed, _spawntime;
 
         private Vector3 _spawnposition;
         private Vector3 _spawntocurrentposition;
@@ -17,8 +18,8 @@ public class ProjectileController : MonoBehaviour
 
         public Projectile(Vector3 spawnPos)
         {
-            _lifetimelimit = baseLifeTimeLimit;
-            _speed = baseSpeed;
+            _lifetimelimit = 1.0f;
+            _speed = 0.5f;
 
             _spawntime = Time.time;
 
@@ -28,13 +29,13 @@ public class ProjectileController : MonoBehaviour
 
         public Projectile(Vector3 spawnPos, float spawnTime)
         {
+            _lifetimelimit = 1.0f;
+            _speed = 0.5f;
+            _spawntime = spawnTime;
+
             float currentLifeTime = Time.time - spawnTime;
 
-            if (currentLifeTime <= 0) return;
-
-            _lifetimelimit = baseLifeTimeLimit;
-            _speed = baseSpeed;
-            _spawntime = spawnTime;
+            if (currentLifeTime >= _lifetimelimit) return;
 
             Vector3 newPos = spawnPos;
             newPos.z += spawnPos.z <= 0 ? _speed * currentLifeTime : -_speed * currentLifeTime;
@@ -57,8 +58,18 @@ public class ProjectileController : MonoBehaviour
         { return _spawntocurrentposition; }
     }
 
+    [SerializeField]
+    private GameObject networkManagerObj;
+
+    private NetworkManager networkManager;
+
     private readonly List<Projectile> localProjectiles = new();
     private readonly List<Projectile> remoteProjectiles = new();
+
+    private void Start()
+    {
+        networkManager = networkManagerObj.GetComponent<NetworkManager>();
+    }
 
     private void Update()
     {
@@ -74,7 +85,9 @@ public class ProjectileController : MonoBehaviour
             }
 
             Vector3 newPos = proj.projectileObj.transform.position;
-            newPos.z += proj.GetSpawnPosition().z <= 0 ? proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
+            newPos.z += proj.GetSpawnPosition().z <= 0 ?
+                proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
+
             proj.projectileObj.transform.position = newPos;
         }
 
@@ -97,23 +110,10 @@ public class ProjectileController : MonoBehaviour
 
     public void LocalSpawnProjectile(Vector3 pos)
     {
-        Projectile projectile = new(pos);
-        projectile.projectileObj =
-            (GameObject)Instantiate(projectileObj, projectile.GetSpawnPosition(), Quaternion.identity);
-        localProjectiles.Add(projectile);
+        Projectile proj = new(pos);
+        proj.projectileObj =
+            (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), Quaternion.identity);
+
+        localProjectiles.Add(proj);
     }
-
-    public void RemoteSpawnProjectile(Vector3 OGSpawnPos, float currentLifeTime)
-    {
-        Projectile projectile = new(OGSpawnPos, currentLifeTime);
-        projectile.projectileObj =
-            (GameObject)Instantiate(projectileObj, projectile.GetSpawnToCurrentPosition(), Quaternion.identity);
-        remoteProjectiles.Add(projectile);
-    }
-
-    public List<Projectile> GetLocalProjectiles()
-    { return localProjectiles; }
-
-    public List<Projectile> GetRemoteProjectiles()
-    { return remoteProjectiles; }
 }

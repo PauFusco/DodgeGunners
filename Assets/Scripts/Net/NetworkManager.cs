@@ -8,13 +8,6 @@ using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject playerManagerObj, projectileControllerObj;
-
-    private PlayerManager playerManager;
-    private ProjectileController projectileController;
-    private GameManager gameManager;
-
     private enum PacketType
     {
         PLAYER,
@@ -24,7 +17,7 @@ public class NetworkManager : MonoBehaviour
 
     public class PlayerPacket
     {
-        public PlayerPacket(GameManager.NetPlayer playerToSend, PlayerBehaviour playerBHToSend)
+        public PlayerPacket(PlayerBehaviour playerBHToSend)
         {
             _type = PacketType.PLAYER;
 
@@ -55,7 +48,7 @@ public class NetworkManager : MonoBehaviour
             _data = playerMStream.ToArray();
         }
 
-        public PlayerPacket(byte[] data, GameManager.NetPlayer playerToModify, PlayerBehaviour playerBHToModify)
+        public PlayerPacket(byte[] data, PlayerBehaviour playerBHToModify)
         {
             MemoryStream playerMStream = new(data);
             BinaryReader playerBReader = new(playerMStream);
@@ -90,7 +83,7 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
-        private PacketType _type;
+        private readonly PacketType _type;
 
         public byte[] GetBuffer()
         { return _data; }
@@ -106,11 +99,11 @@ public class NetworkManager : MonoBehaviour
     {
         public class MockProjectile
         {
-            public MockProjectile(Vector3 spawnPos, float lifeTime, float spawnTime)
+            public MockProjectile(Vector3 spawnPos, float spawnTime, float lifeTime)
             {
                 _spawnpos = spawnPos;
                 _spawntime = spawnTime;
-                _lifetime = spawnTime;
+                _lifetime = lifeTime;
             }
 
             public Vector3 GetSpawnPos()
@@ -123,7 +116,7 @@ public class NetworkManager : MonoBehaviour
             { return _lifetime; }
 
             private Vector3 _spawnpos;
-            private float _spawntime, _lifetime;
+            private readonly float _spawntime, _lifetime;
         }
 
         public ProjectilesPacket(List<ProjectileController.Projectile> projectileList)
@@ -145,7 +138,8 @@ public class NetworkManager : MonoBehaviour
 
                 projectileBWriter.Write(proj.GetSpawnTime());
 
-                projectileBWriter.Write(Time.time);
+                float lifetime = Time.time - proj.GetSpawnTime();
+                projectileBWriter.Write(lifetime);
             }
 
             _data = projectileMStream.ToArray();
@@ -165,7 +159,6 @@ public class NetworkManager : MonoBehaviour
                 float tempx = projectileBReader.ReadSingle();
                 float tempy = projectileBReader.ReadSingle();
                 float tempz = projectileBReader.ReadSingle();
-
                 Vector3 tempSpawn = new(tempx, tempy, tempz);
 
                 float spawntime = projectileBReader.ReadSingle();
@@ -177,28 +170,50 @@ public class NetworkManager : MonoBehaviour
             }
         }
 
-        private byte[] _data;
-        private readonly List<MockProjectile> _netprojectiles;
+        private readonly byte[] _data;
+        private readonly List<MockProjectile> _netprojectiles = new();
         private readonly PacketType _type;
+
+        public byte[] GetBuffer()
+        { return _data; }
 
         public List<MockProjectile> GetNetProjectiles()
         { return _netprojectiles; }
     }
 
+    [SerializeField]
+    private GameObject playerManagerObj;
+
+    private PlayerManager playerManager;
+    private GameManager gameManager;
+
+    private List<ProjectilesPacket.MockProjectile> NetProjectiles = new();
+
     private void Start()
     {
-        playerManager = playerManagerObj.GetComponent<PlayerManager>();
-        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
-
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        playerManager = playerManagerObj.GetComponent<PlayerManager>();
 
         Thread receiveNetMovement = new(RecieveNetInfo);
         receiveNetMovement.Start();
     }
 
-    public void SendNetInfo(PlayerBehaviour localPlayerToSend)
+    public List<ProjectilesPacket.MockProjectile> GetNetProjectiles()
+    { return NetProjectiles; }
+
+    public void SendPlayerNetInfo(PlayerBehaviour localPlayerToSend)
     {
-        PlayerPacket localPacket = new(gameManager.GetLocal(), localPlayerToSend);
+        PlayerPacket localPacket = new(localPlayerToSend);
+
+        Socket socket = gameManager.GetRemote().GetSocket();
+
+        if (playerManager.GetLocalIsHost()) socket.SendTo(localPacket.GetBuffer(), gameManager.GetRemote().GetEndPoint());
+        else socket.Send(localPacket.GetBuffer());
+    }
+
+    public void SendProjectilesNetInfo(List<ProjectileController.Projectile> projectiles)
+    {
+        ProjectilesPacket localPacket = new(projectiles);
 
         Socket socket = gameManager.GetRemote().GetSocket();
 
@@ -233,25 +248,15 @@ public class NetworkManager : MonoBehaviour
             switch (ptype)
             {
                 case PacketType.PLAYER:
-                    PlayerPacket PlPacket = new(data, gameManager.GetRemote(), playerManager.GetRemote());
+                    PlayerPacket PlPacket = new(data, playerManager.GetRemote());
                     playerManager.SetNetPosition(PlPacket.GetPosition());
                     break;
 
                 case PacketType.PROJECTILE:
                     ProjectilesPacket PrPacket = new(data);
-                    ModifyProjectilesWithNetInfo(PrPacket.GetNetProjectiles());
+                    NetProjectiles = PrPacket.GetNetProjectiles();
                     break;
             }
-        }
-    }
-
-    private void ModifyProjectilesWithNetInfo(List<ProjectilesPacket.MockProjectile> mockProjectiles)
-    {
-        projectileController.GetRemoteProjectiles().Clear();
-
-        foreach (ProjectilesPacket.MockProjectile p in mockProjectiles)
-        {
-            projectileController.RemoteSpawnProjectile(p.GetSpawnPos(), p.GetLifetime());
         }
     }
 }
