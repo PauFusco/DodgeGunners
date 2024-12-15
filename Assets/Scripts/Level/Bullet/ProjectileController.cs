@@ -23,6 +23,7 @@ public class ProjectileController : MonoBehaviour
             _spawntime = Time.time;
 
             _spawnposition = spawnPos;
+            _spawntocurrentposition = spawnPos;
         }
 
         public Projectile(Vector3 spawnPos, float spawnTime)
@@ -61,36 +62,35 @@ public class ProjectileController : MonoBehaviour
 
     private void Update()
     {
-        foreach (var proj in localProjectiles)
+        for (int i = localProjectiles.Count - 1; i >= 0; i--)
         {
+            var proj = localProjectiles[i];
             float currentLifetime = Time.time - proj.GetSpawnTime();
             if (currentLifetime >= proj.GetLifetimeLimit())
             {
                 Destroy(proj.projectileObj);
-                localProjectiles.Remove(proj);
+                localProjectiles.RemoveAt(i);
                 continue;
             }
 
             Vector3 newPos = proj.projectileObj.transform.position;
             newPos.z += proj.GetSpawnPosition().z <= 0 ? proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
-
             proj.projectileObj.transform.position = newPos;
         }
 
-        foreach (var proj in remoteProjectiles)
+        for (int i = remoteProjectiles.Count - 1; i >= 0; i--)
         {
+            var proj = remoteProjectiles[i];
             float currentLifetime = Time.time - proj.GetSpawnTime();
             if (currentLifetime >= proj.GetLifetimeLimit())
             {
                 Destroy(proj.projectileObj);
-                localProjectiles.Remove(proj);
+                remoteProjectiles.RemoveAt(i);
                 continue;
             }
 
             Vector3 newPos = proj.projectileObj.transform.position;
-            newPos.z += proj.GetSpawnPosition().z <= 0 ?
-                proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
-
+            newPos.z += proj.GetSpawnPosition().z <= 0 ? proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
             proj.projectileObj.transform.position = newPos;
         }
     }
