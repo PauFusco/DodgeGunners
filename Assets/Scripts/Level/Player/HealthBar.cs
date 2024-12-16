@@ -12,14 +12,20 @@ public class HealthBar : MonoBehaviour
     
     void Start()
     {
-        health = maxHealth;
+        ResetHealth();
     }
 
-    public void UpdateHealth(int damage)
+    public void TakeDamage()
     {
         if (health > 0)
-            health -= damage;
+            health --;
 
+        healthBar.fillAmount = health / maxHealth;
+    }
+
+    public void ResetHealth()
+    {
+        health = maxHealth;
         healthBar.fillAmount = health / maxHealth;
     }
 }
