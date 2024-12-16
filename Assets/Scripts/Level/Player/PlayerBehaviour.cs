@@ -65,7 +65,6 @@ public class PlayerBehaviour : MonoBehaviour
     public void Die()
     {
         _alive = false;
-        enemyScore.Increase();
         healthBar.ResetHealth();
     }
 
