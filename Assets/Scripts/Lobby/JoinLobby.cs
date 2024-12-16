@@ -6,17 +6,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System;
 
 public class JoinLobby : MonoBehaviour
 {
     [SerializeField]
-    private GameObject joinObj, usernameObj, hostIPObj, gameManagerObj, logObj;
+    private GameObject joinObj, usernameObj, roomCodeObj, gameManagerObj, logObj;
 
     private Button join;
-    private TMP_InputField usernameInput, hostIPInput;
+    private TMP_InputField usernameInput, roomCodeInput;
     private GameManager gameManager;
 
-    private IPEndPoint hostIPEP;
     private Socket socket;
 
     private bool startGame;
@@ -24,13 +25,18 @@ public class JoinLobby : MonoBehaviour
     private TextMeshProUGUI log;
     private string debugText;
 
+    private IPAddress serverIP;
+
     private void Start()
     {
+        // Put server IP here
+        serverIP = IPAddress.Parse("192.168.1.131");
+
         startGame = false;
 
         join = joinObj.GetComponent<Button>();
         usernameInput = usernameObj.GetComponent<TMP_InputField>();
-        hostIPInput = hostIPObj.GetComponent<TMP_InputField>();
+        roomCodeInput = roomCodeObj.GetComponent<TMP_InputField>();
 
         gameManager = gameManagerObj.GetComponent<GameManager>();
 
@@ -50,18 +56,24 @@ public class JoinLobby : MonoBehaviour
 
     private void LobbyJoin()
     {
-        hostIPEP = new(IPAddress.Parse(hostIPInput.text), 9050);
-        socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        IPEndPoint serverIPEP = new(serverIP, 9050);
+        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-        socket.Connect(hostIPEP);
-        debugText = "Waiting to join...";
+        socket.Connect(serverIPEP);
+
+        //debugText = "Waiting to join...";
 
         gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.REMOTE);
 
-        byte[] username = new byte[1024];
-        username = Encoding.UTF8.GetBytes(usernameInput.text);
+        MemoryStream roomRequestMS = new();
+        BinaryWriter BW = new(roomRequestMS);
 
-        socket.SendTo(username, hostIPEP);
+        LobbyMessageType type = LobbyMessageType.JOIN;
+        BW.Write((int)type);
+        BW.Write(usernameInput.text);
+        BW.Write(roomCodeInput.text);
+
+        socket.Send(roomRequestMS.ToArray());
 
         Thread recieveEnemyUsrnm = new(RecieveEnemyUsername);
         recieveEnemyUsrnm.Start();
@@ -79,9 +91,19 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            gameManager.AddRemote(Encoding.UTF8.GetString(data, 0, recv), hostIPEP, GameManager.NetPlayer.Type.HOST, socket);
+            MemoryStream remoteMS = new(data);
+            BinaryReader remoteMSBR = new(remoteMS);
 
-            debugText = "You have joined " + Encoding.UTF8.GetString(data, 0, recv) + "'s lobby!";
+            string remoteUsername = remoteMSBR.ReadString();
+            IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
+
+            IPEndPoint hostIPEP = new(remoteIP, 9050);
+            socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            socket.Connect(hostIPEP);
+
+            gameManager.AddRemote(remoteUsername, hostIPEP, GameManager.NetPlayer.Type.HOST, socket);
+
+            debugText = "You have joined " + remoteIP.ToString() + "'s lobby!";
 
             Thread checkGameStart = new(RecieveGameStart);
             checkGameStart.Start();

@@ -4,24 +4,20 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class Countdown : MonoBehaviour
+public class Timer : MonoBehaviour
 {
     private TMP_Text m_TimerText;
-    public float startTime;
-    private float m_Time;
+    public float m_Time;
 
-    private void Awake()
+    void Awake()
     {
         m_TimerText = GetComponent<TMP_Text>();
     }
 
-    private void Update()
+    void Update()
     {
         m_Time -= Time.deltaTime;
 
         m_TimerText.text = TimeSpan.FromSeconds(m_Time).ToString(format: @"mm\:ss");
     }
-
-    public void ResetCountdown()
-    {  m_Time = startTime; }
 }

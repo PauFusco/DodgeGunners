@@ -3,24 +3,20 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
-    [SerializeField]
-    private Countdown countdown;
+    private GameObject hostObj, remoteObj, networkManagerObj;
 
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
-    private ProjectileController projectileController;
+
     private bool localIsHost;
 
     private Vector3 tempNetPos;
-    public int bulletOffset;
 
     private void Start()
     {
         networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
 
         if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.REMOTE)
         {
@@ -47,34 +43,21 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        CheckKeyMovement(local);
-        CheckStatus(local);
+        CheckKeys(local);
     }
 
     private void FixedUpdate()
     {
-        networkManager.SendPlayerNetInfo(local);
+        networkManager.SendNetInfo(local);
         remote.SetPosition(tempNetPos);
     }
 
-    private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
+    private void CheckKeys(PlayerBehaviour localPlayerToCheck)
     {
-        if (Input.GetKeyDown(KeyCode.W)) localPlayerToMove.MoveUp();
-        if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
-        if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
-        if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
-
-        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
-    }
-
-    private void CheckStatus(PlayerBehaviour localPlayerToMove)
-    {
-        if (!localPlayerToMove._alive)
-        {
-            localPlayerToMove._alive = true;
-            localPlayerToMove.enemyScore.Increase();
-            countdown.ResetCountdown();
-        }
+        if (Input.GetKey(KeyCode.W)) localPlayerToCheck.MoveUp();
+        if (Input.GetKey(KeyCode.A)) localPlayerToCheck.MoveLeft();
+        if (Input.GetKey(KeyCode.S)) localPlayerToCheck.MoveDown();
+        if (Input.GetKey(KeyCode.D)) localPlayerToCheck.MoveRight();
     }
 
     public void SetNetPosition(Vector3 pos)
@@ -88,12 +71,4 @@ public class PlayerManager : MonoBehaviour
 
     public PlayerBehaviour GetRemote()
     { return remote; }
-
-    public Vector3 GetBulletDirection()
-    {
-        if (local.transform.position.z < 0)
-            return new Vector3(local.transform.position.x, local.transform.position.y, local.transform.position.z + bulletOffset);
-        else
-            return new Vector3(local.transform.position.x, local.transform.position.y, local.transform.position.z - bulletOffset);
-    }
 }
