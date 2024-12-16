@@ -13,14 +13,17 @@ public class PlayerBehaviour : MonoBehaviour
     public int maxJumps = 2;
 
     private readonly UInt16 _score;
+    public bool _alive = true;
 
     public HealthBar healthBar;
 
     [SerializeField]
     private TextMeshProUGUI playerBillboard;
+    public Score enemyScore;
 
     private void Start()
     {
+        _alive = true;
         rb = GetComponent<Rigidbody>();
         if (rb == null)
             Debug.LogError("Rigidbody is missing on the player GameObject");
@@ -58,6 +61,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     public Transform GetLocalTransform()
     { return transform; }
+
+    public void Die()
+    {
+        _alive = false;
+        enemyScore.Increase();
+        healthBar.ResetHealth();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

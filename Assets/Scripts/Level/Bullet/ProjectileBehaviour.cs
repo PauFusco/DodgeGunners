@@ -11,7 +11,11 @@ public class ProjectileBehaviour : MonoBehaviour
             var player = other.GetComponent<PlayerBehaviour>();
             if (player != null)
             {
-                player.healthBar.UpdateHealth(1);
+                player.healthBar.TakeDamage();
+                if (player.healthBar.health == 0) 
+                { 
+                    player.Die();
+                }
             }
 
             Destroy(gameObject);

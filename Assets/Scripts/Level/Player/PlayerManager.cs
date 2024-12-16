@@ -4,12 +4,13 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
+    [SerializeField]
+    private Countdown countdown;
 
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
     private ProjectileController projectileController;
-
     private bool localIsHost;
 
     private Vector3 tempNetPos;
@@ -47,6 +48,7 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         CheckKeyMovement(local);
+        CheckStatus(local);
     }
 
     private void FixedUpdate()
@@ -63,6 +65,16 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
 
         if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
+    }
+
+    private void CheckStatus(PlayerBehaviour localPlayerToMove)
+    {
+        if (!localPlayerToMove._alive)
+        {
+            localPlayerToMove._alive = true;
+            localPlayerToMove.enemyScore.Increase();
+            countdown.ResetCountdown();
+        }
     }
 
     public void SetNetPosition(Vector3 pos)

@@ -313,8 +313,9 @@ GameObject:
   - component: {fileID: 189394754}
   - component: {fileID: 189394756}
   - component: {fileID: 189394755}
+  - component: {fileID: 189394757}
   m_Layer: 5
-  m_Name: Score2
+  m_Name: RightScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -436,6 +437,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189394753}
   m_CullTransparentMesh: 1
+--- !u!114 &189394757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189394753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bd0a3e9624fe9c45a29d6698bc591b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &453268427
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,6 +557,7 @@ MonoBehaviour:
   remoteObj: {fileID: 2097326850}
   networkManagerObj: {fileID: 1805400979}
   projectileControllerObj: {fileID: 1933982319}
+  countdown: {fileID: 1053944749}
   bulletOffset: 1
 --- !u!4 &509654363
 Transform:
@@ -624,8 +638,9 @@ GameObject:
   - component: {fileID: 638901917}
   - component: {fileID: 638901919}
   - component: {fileID: 638901918}
+  - component: {fileID: 638901920}
   m_Layer: 5
-  m_Name: Score1
+  m_Name: LeftScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -747,6 +762,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 638901916}
   m_CullTransparentMesh: 1
+--- !u!114 &638901920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638901916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bd0a3e9624fe9c45a29d6698bc591b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,7 +1041,7 @@ GameObject:
   - component: {fileID: 1053944747}
   - component: {fileID: 1053944749}
   m_Layer: 5
-  m_Name: Time
+  m_Name: Countdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,7 +1175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b96e597b498023942a058df95509df42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Time: 120
+  startTime: 150
 --- !u!1 &1099996428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,6 +1915,10 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: enemyScore
+      value: 
+      objectReference: {fileID: 189394757}
     - target: {fileID: 5499614588063291116, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_Name
       value: P2
@@ -1966,6 +1997,10 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: enemyScore
+      value: 
+      objectReference: {fileID: 638901920}
     - target: {fileID: 5499614588063291116, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_Name
       value: P1
