@@ -30,7 +30,7 @@ public class JoinLobby : MonoBehaviour
     private void Start()
     {
         // Put server IP here
-        serverIP = IPAddress.Parse("192.168.1.131");
+        serverIP = IPAddress.Parse("192.168.56.1");
 
         startGame = false;
 
@@ -91,13 +91,16 @@ public class JoinLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+
             MemoryStream remoteMS = new(data);
             BinaryReader remoteMSBR = new(remoteMS);
 
             string remoteUsername = remoteMSBR.ReadString();
             IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
 
-            IPEndPoint hostIPEP = new(remoteIP, 9050);
+            IPEndPoint hostIPEP = new(remoteIP, 50000);
             socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             socket.Connect(hostIPEP);
 

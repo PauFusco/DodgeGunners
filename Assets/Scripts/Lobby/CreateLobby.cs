@@ -40,7 +40,7 @@ public class CreateLobby : MonoBehaviour
     private void Start()
     {
         // Put server IP here
-        serverIP = IPAddress.Parse("192.168.1.131");
+        serverIP = IPAddress.Parse("192.168.56.1");
         roomCode = -1;
         roomText = "";
 
@@ -123,22 +123,23 @@ public class CreateLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+
             MemoryStream remoteMS = new(data);
             BinaryReader remoteMSBR = new(remoteMS);
 
             string remoteUsername = remoteMSBR.ReadString();
             IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
 
-            IPEndPoint binderIPEP = new(IPAddress.Any, 9050);
+            IPEndPoint binderIPEP = new(IPAddress.Any, 50000);
             socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(binderIPEP);
 
-            IPEndPoint remoteipep = new(remoteIP, 9050);
+            IPEndPoint remoteipep = new(remoteIP, 50000);
             gameManager.AddRemote(remoteUsername, remoteipep, GameManager.NetPlayer.Type.REMOTE, socket);
 
             gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.HOST);
-
-            debugText = remoteIP.ToString();
 
             startGame = true;
         }
@@ -147,7 +148,6 @@ public class CreateLobby : MonoBehaviour
     private void LobbyStart()
     {
         byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
-
         socket.SendTo(startGame, gameManager.GetRemote().GetIPEndPoint());
 
         SceneManager.LoadScene(1);

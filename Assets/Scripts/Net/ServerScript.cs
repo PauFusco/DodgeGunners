@@ -101,41 +101,6 @@ public class ServerScript : MonoBehaviour
         }
     }
 
-    //private void CheckConnections()
-    //{
-    //    byte[] data = new byte[1024];
-    //    int recv;
-
-    //    IPEndPoint sender = new(IPAddress.Any, 0);
-    //    EndPoint remote = sender;
-
-    //    while (room.GetSize() < 2)
-    //    {
-    //        recv = socket.ReceiveFrom(data, ref remote);
-
-    //        if (recv == 0) continue;
-
-    //        IPEndPoint ipep = (IPEndPoint)remote;
-
-    //        room.AddPlayer(Encoding.ASCII.GetString(data, 0, recv), ipep);
-
-    //        if (!hostOnline)
-    //        {
-    //            byte[] roomCode = Encoding.ASCII.GetBytes(room.GetCode().ToString());
-    //            socket.SendTo(roomCode, remote);
-    //            hostOnline = true;
-    //        }
-    //        else
-    //        {
-    //            byte[] hostIP = Encoding.ASCII.GetBytes(room._players[0].GetIPEndPoint().Address.ToString());
-    //            byte[] guestIP = Encoding.ASCII.GetBytes(room._players[1].GetIPEndPoint().Address.ToString());
-
-    //            socket.SendTo(guestIP, room._players[0].GetIPEndPoint());
-    //            socket.SendTo(hostIP, room._players[1].GetIPEndPoint());
-    //        }
-    //    }
-    //}
-
     private void CheckConnections()
     {
         byte[] data = new byte[1024];
@@ -192,18 +157,21 @@ public class ServerScript : MonoBehaviour
 
     private void SendUsernamesIPsToPlayers(Room room)
     {
+        Player host = room._players[0];
+        Player remote = room._players[1];
+
         MemoryStream hostMS = new();
         BinaryWriter hostMSBW = new(hostMS);
-        hostMSBW.Write(room._players[0].GetUsername());
-        hostMSBW.Write(room._players[0].GetIPEndPoint().Address.ToString());
+        hostMSBW.Write(host.GetUsername());
+        hostMSBW.Write(host.GetIPEndPoint().Address.ToString());
 
-        socket.SendTo(hostMS.ToArray(), room._players[1].GetIPEndPoint());
+        socket.SendTo(hostMS.ToArray(), remote.GetIPEndPoint());
 
         MemoryStream remoteMS = new();
         BinaryWriter remoteMSBW = new(remoteMS);
-        remoteMSBW.Write(room._players[1].GetUsername());
-        remoteMSBW.Write(room._players[1].GetIPEndPoint().Address.ToString());
+        remoteMSBW.Write(remote.GetUsername());
+        remoteMSBW.Write(remote.GetIPEndPoint().Address.ToString());
 
-        socket.SendTo(remoteMS.ToArray(), room._players[0].GetIPEndPoint());
+        socket.SendTo(remoteMS.ToArray(), host.GetIPEndPoint());
     }
 }
