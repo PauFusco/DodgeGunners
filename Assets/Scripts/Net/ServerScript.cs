@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -54,16 +53,52 @@ public class ServerScript : MonoBehaviour
 
     private readonly List<Room> rooms = new();
 
+    private string newplayerusername;
+    private UInt16 newplayerroomcode;
+    private IPEndPoint newplayerep;
+    private bool roompending;
+    private bool remotepending;
+
     private Socket socket;
 
     private void Start()
     {
+        roompending = false;
+        remotepending = false;
+
         IPEndPoint ipep = new(IPAddress.Any, 9050);
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         socket.Bind(ipep);
 
         Thread newConnectionsCheck = new(CheckConnections);
         newConnectionsCheck.Start();
+    }
+
+    private void Update()
+    {
+        if (roompending)
+        {
+            Room newRoom = CreateNewRoom(newplayerusername, newplayerep);
+
+            socket.SendTo(Encoding.ASCII.GetBytes(newRoom.GetCode().ToString()), newplayerep);
+
+            roompending = false;
+        }
+
+        if (remotepending)
+        {
+            foreach (var room in rooms)
+            {
+                if (room.GetCode() == newplayerroomcode)
+                {
+                    room.AddPlayer(newplayerusername, newplayerep);
+
+                    SendUsernamesIPsToPlayers(room);
+
+                    remotepending = false;
+                }
+            }
+        }
     }
 
     //private void CheckConnections()
@@ -123,15 +158,20 @@ public class ServerScript : MonoBehaviour
             switch (messageType)
             {
                 case LobbyMessageType.CREATE:
-                    string username = messageBR.ReadString();
-                    Debug.Log(username);
-                    Room newRoom = CreateNewRoom(username, (IPEndPoint)remote);
+                    newplayerusername = messageBR.ReadString();
+                    newplayerep = (IPEndPoint)remote;
 
-                    socket.SendTo(Encoding.ASCII.GetBytes(newRoom.GetCode().ToString()), remote);
+                    roompending = true;
 
                     break;
 
                 case LobbyMessageType.JOIN:
+                    newplayerusername = messageBR.ReadString();
+                    newplayerroomcode = UInt16.Parse(messageBR.ReadString());
+                    newplayerep = (IPEndPoint)remote;
+
+                    remotepending = true;
+
                     break;
 
                 case LobbyMessageType.DEFAULT:
@@ -148,5 +188,22 @@ public class ServerScript : MonoBehaviour
         newRoom.AddPlayer(hostUsername, hostIPEP);
 
         return newRoom;
+    }
+
+    private void SendUsernamesIPsToPlayers(Room room)
+    {
+        MemoryStream hostMS = new();
+        BinaryWriter hostMSBW = new(hostMS);
+        hostMSBW.Write(room._players[0].GetUsername());
+        hostMSBW.Write(room._players[0].GetIPEndPoint().Address.ToString());
+
+        socket.SendTo(hostMS.ToArray(), room._players[1].GetIPEndPoint());
+
+        MemoryStream remoteMS = new();
+        BinaryWriter remoteMSBW = new(remoteMS);
+        remoteMSBW.Write(room._players[1].GetUsername());
+        remoteMSBW.Write(room._players[1].GetIPEndPoint().Address.ToString());
+
+        socket.SendTo(remoteMS.ToArray(), room._players[0].GetIPEndPoint());
     }
 }

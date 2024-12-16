@@ -16,10 +16,10 @@ public class GameManager : MonoBehaviour
             REMOTE
         }
 
-        public NetPlayer(string username, EndPoint endpoint, Type type, Socket socket)
+        public NetPlayer(string username, IPEndPoint endpoint, Type type, Socket socket)
         {
             _username = username;
-            _endpoint = endpoint;
+            _ipendpoint = endpoint;
             _usedSocket = socket;
             _type = type;
         }
@@ -27,8 +27,8 @@ public class GameManager : MonoBehaviour
         public string GetUsername()
         { return _username; }
 
-        public EndPoint GetEndPoint()
-        { return _endpoint; }
+        public EndPoint GetIPEndPoint()
+        { return _ipendpoint; }
 
         public Type GetPlayerType()
         { return _type; }
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         { return _hp; }
 
         private readonly string _username;
-        private readonly EndPoint _endpoint;
+        private readonly IPEndPoint _ipendpoint;
         private readonly Socket _usedSocket;
         private readonly Type _type;
         private readonly UInt16 _score;
@@ -56,8 +56,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     { DontDestroyOnLoad(transform.gameObject); }
 
-    public void AddRemote(string username, EndPoint ep, NetPlayer.Type type, Socket socket)
-    { remote = new(username, ep, type, socket); }
+    public void AddRemote(string username, IPEndPoint ipep, NetPlayer.Type type, Socket socket)
+    { remote = new(username, ipep, type, socket); }
 
     public void SetLocal(string username, NetPlayer.Type type)
     { local = new(username, null, type, null); }

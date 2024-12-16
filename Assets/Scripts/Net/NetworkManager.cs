@@ -105,7 +105,7 @@ public class NetworkManager : MonoBehaviour
 
         Socket socket = gameManager.GetRemote().GetSocket();
 
-        if (playerManager.GetLocalIsHost()) socket.SendTo(localPacket.GetBuffer(), gameManager.GetRemote().GetEndPoint());
+        if (playerManager.GetLocalIsHost()) socket.SendTo(localPacket.GetBuffer(), gameManager.GetRemote().GetIPEndPoint());
         else socket.Send(localPacket.GetBuffer());
     }
 

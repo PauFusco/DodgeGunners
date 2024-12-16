@@ -8,6 +8,7 @@ using System.Text;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System;
+using Unity.VisualScripting;
 
 internal enum LobbyMessageType
 {
@@ -24,7 +25,7 @@ public class CreateLobby : MonoBehaviour
     private Button createButton, startButton;
     private TextMeshProUGUI log;
     private TMP_InputField usernameInput;
-    private TextMeshProUGUI hostIP;
+    private TextMeshProUGUI hostCode;
     private GameManager gameManager;
 
     private Socket socket;
@@ -47,7 +48,7 @@ public class CreateLobby : MonoBehaviour
         startButton = startObj.GetComponent<Button>();
         log = logObj.GetComponent<TextMeshProUGUI>();
         usernameInput = usernameInputFieldObj.GetComponent<TMP_InputField>();
-        hostIP = hostObj.GetComponent<TextMeshProUGUI>();
+        hostCode = hostObj.GetComponent<TextMeshProUGUI>();
         gameManager = gameManagerObj.GetComponent<GameManager>();
 
         createButton.onClick.AddListener(LobbyCreate);
@@ -58,22 +59,19 @@ public class CreateLobby : MonoBehaviour
     private void Update()
     {
         log.text = debugText;
-        hostIP.text = roomText;
-        hostIP.text = roomCode.ToString();
+        hostCode.text = roomText;
+        hostCode.text = roomCode.ToString();
         startButton.interactable = startGame;
     }
 
     private void LobbyCreate()
     {
-        IPEndPoint ipep = new(IPAddress.Any, 9050);
+        IPEndPoint serverIPEP = new(serverIP, 9050);
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        socket.Bind(ipep);
+
+        socket.Connect(serverIPEP);
 
         gameManager.ClearRemote();
-
-        debugText = "Lobby Created";
-
-        IPEndPoint serverIPEP = new(serverIP, 9050);
 
         MemoryStream usernameMS = new();
         BinaryWriter BW = new(usernameMS);
@@ -82,7 +80,7 @@ public class CreateLobby : MonoBehaviour
         BW.Write((int)type);
         BW.Write(usernameInput.text);
 
-        socket.SendTo(usernameMS.ToArray(), serverIPEP);
+        socket.Send(usernameMS.ToArray());
 
         debugText = "Creating Room...";
 
@@ -104,14 +102,14 @@ public class CreateLobby : MonoBehaviour
 
             if (recv == 0) continue;
 
-            roomCode = (UInt16)BitConverter.ToInt16(data, 0);
+            roomCode = UInt16.Parse(Encoding.ASCII.GetString(data));
         }
 
-        Thread newConnectionCheck = new(CheckNewPlayers);
+        Thread newConnectionCheck = new(CheckNewPlayer);
         newConnectionCheck.Start();
     }
 
-    private void CheckNewPlayers()
+    private void CheckNewPlayer()
     {
         byte[] data = new byte[1024];
         int recv;
@@ -119,22 +117,28 @@ public class CreateLobby : MonoBehaviour
         IPEndPoint sender = new(IPAddress.Any, 0);
         EndPoint remote = sender;
 
-        while (gameManager.GetRemote().GetEndPoint() == null)
+        while (gameManager.GetRemote().GetIPEndPoint() == null)
         {
             recv = socket.ReceiveFrom(data, ref remote);
 
             if (recv == 0) continue;
 
-            string message = Encoding.ASCII.GetString(data, 0, recv);
-            debugText = message + " Just Joined!";
+            MemoryStream remoteMS = new(data);
+            BinaryReader remoteMSBR = new(remoteMS);
 
-            gameManager.AddRemote(message, remote, GameManager.NetPlayer.Type.REMOTE, socket);
+            string remoteUsername = remoteMSBR.ReadString();
+            IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
+
+            IPEndPoint binderIPEP = new(IPAddress.Any, 9050);
+            socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            socket.Bind(binderIPEP);
+
+            IPEndPoint remoteipep = new(remoteIP, 9050);
+            gameManager.AddRemote(remoteUsername, remoteipep, GameManager.NetPlayer.Type.REMOTE, socket);
 
             gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.HOST);
 
-            byte[] username = Encoding.ASCII.GetBytes(usernameInput.text);
-
-            socket.SendTo(username, gameManager.GetRemote().GetEndPoint());
+            debugText = remoteIP.ToString();
 
             startGame = true;
         }
@@ -144,16 +148,16 @@ public class CreateLobby : MonoBehaviour
     {
         byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
 
-        socket.SendTo(startGame, gameManager.GetRemote().GetEndPoint());
+        socket.SendTo(startGame, gameManager.GetRemote().GetIPEndPoint());
 
         SceneManager.LoadScene(1);
     }
 
-    public void CopyIP()
+    public void CopyCode()
     {
-        if (hostIP != null)
+        if (hostCode != null)
         {
-            GUIUtility.systemCopyBuffer = hostIP.text;
+            GUIUtility.systemCopyBuffer = hostCode.text;
             debugText = "Copied to Clipboard!";
         }
         else
