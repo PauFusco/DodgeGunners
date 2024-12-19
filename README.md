@@ -3,7 +3,7 @@ by Pau Fusco and Júlia Serra
 
 ## Links 
 Link to GitHub: https://github.com/PauFusco/DodgeGunners
-Link to Release: 
+Link to Release: https://github.com/PauFusco/DodgeGunners/releases/tag/v2.0
 
 ## Contributions
 We have worked together, so both names will appear on some of the tasks
