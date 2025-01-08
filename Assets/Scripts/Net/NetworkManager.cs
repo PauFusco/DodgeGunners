@@ -78,17 +78,17 @@ public class NetworkManager : MonoBehaviour
             _rotation = Quaternion.Euler(newERotation);
 
             // HP
-            float health = playerBReader.ReadSingle();
-            _health = health;
+            _health = playerBReader.ReadSingle();
 
             // score
+            _score = playerBReader.ReadInt32();
         }
 
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
         private float _health = new();
-        // private _score
+        private int _score = new();
         private readonly PacketType _type;
 
         public byte[] GetBuffer()
@@ -102,6 +102,9 @@ public class NetworkManager : MonoBehaviour
 
         public float GetHealth()
         { return _health; }
+        
+        public int GetScore()
+        { return _score; }
     }
 
     public class ProjectilesPacket
@@ -258,6 +261,7 @@ public class NetworkManager : MonoBehaviour
                     PlayerPacket PlPacket = new(data, playerManager.GetRemote());
                     playerManager.SetNetPosition(PlPacket.GetPosition());
                     playerManager.SetNetHealth(PlPacket.GetHealth());
+                    playerManager.SetNetScore(PlPacket.GetScore());
                     break;
 
                 case PacketType.PROJECTILE:

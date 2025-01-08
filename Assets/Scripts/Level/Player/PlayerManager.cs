@@ -15,6 +15,7 @@ public class PlayerManager : MonoBehaviour
 
     private Vector3 tempNetPos;
     private float tempHealth;
+    private int tempScore;
 
     public int bulletOffset;
 
@@ -43,8 +44,6 @@ public class PlayerManager : MonoBehaviour
             tempNetPos = local.transform.position;
         }
 
-        tempHealth = 3f;
-
         local.SetPlayerTag(gameManager.GetLocal().GetUsername());
         remote.SetPlayerTag(gameManager.GetRemote().GetUsername());
     }
@@ -52,7 +51,7 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         CheckKeyMovement(local);
-        CheckStatus(local);
+        CheckStatus();
     }
 
     private void FixedUpdate()
@@ -60,6 +59,7 @@ public class PlayerManager : MonoBehaviour
         networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
         remote.healthBar.SetHealth(tempHealth);
+        remote.score.SetScore(tempScore);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
@@ -72,15 +72,19 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
     }
 
-    private void CheckStatus(PlayerBehaviour localPlayerToMove)
+    private void CheckStatus()
     {
-        // Score
-
-        if (!localPlayerToMove._alive)
+        if (!local.isAlive) 
         {
-            //localPlayerToMove._alive = true;
-            //localPlayerToMove.enemyScore.Increase();
-            //countdown.ResetCountdown();
+            remote.score.Increase();
+            local.healthBar.ResetHealth();
+            local.isAlive = true;
+        }
+        if (!remote.isAlive)
+        {
+            local.score.Increase();
+            remote.healthBar.ResetHealth();
+            remote.isAlive = true;
         }
     }
 
@@ -89,6 +93,9 @@ public class PlayerManager : MonoBehaviour
 
     public void SetNetHealth(float health)
     { tempHealth = health; }
+
+    public void SetNetScore(int score)
+    { tempScore = score; }
 
     public bool GetLocalIsHost()
     { return localIsHost; }

@@ -13,7 +13,7 @@ public class PlayerBehaviour : MonoBehaviour
     public int maxJumps = 2;
 
     private readonly UInt16 _score;
-    public bool _alive = true;
+    public bool isAlive = true;
 
     public HealthBar healthBar;
 
@@ -22,7 +22,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Start()
     {
-        _alive = true;
+        isAlive = true;
         rb = GetComponent<Rigidbody>();
         if (rb == null)
             Debug.LogError("Rigidbody is missing on the player GameObject");
@@ -64,14 +64,11 @@ public class PlayerBehaviour : MonoBehaviour
     public float GetHealth()
     { return healthBar.GetHealth(); }
 
-    public float GetScore()
+    public int GetScore()
     { return score.GetScore(); }
 
     public void Die()
-    {
-        _alive = false;
-        healthBar.ResetHealth();
-    }
+    { isAlive = false; }
 
     private void OnCollisionEnter(Collision collision)
     {

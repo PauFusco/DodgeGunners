@@ -7,7 +7,7 @@ public class Score : MonoBehaviour
 {
     private TextMeshProUGUI score;
 
-    private uint _score = 0;
+    private int _score = 0;
     
     private void Start()
     {
@@ -22,9 +22,9 @@ public class Score : MonoBehaviour
     public void Increase() 
     { _score++; }
 
-    public uint GetScore() 
+    public int GetScore() 
     { return _score; }
 
-    public void SetScore(uint score) 
+    public void SetScore(int score) 
     { _score = score; }
 }
