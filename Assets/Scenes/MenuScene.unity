@@ -1028,7 +1028,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1351920237}
         m_TargetAssemblyTypeName: CreateLobby, Assembly-CSharp
-        m_MethodName: CopyIP
+        m_MethodName: CopyCode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
