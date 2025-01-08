@@ -14,6 +14,8 @@ public class PlayerManager : MonoBehaviour
     private bool localIsHost;
 
     private Vector3 tempNetPos;
+    private float tempHealth;
+
     public int bulletOffset;
 
     private void Start()
@@ -41,6 +43,7 @@ public class PlayerManager : MonoBehaviour
             tempNetPos = local.transform.position;
         }
 
+        tempHealth = 3;
         local.SetPlayerTag(gameManager.GetLocal().GetUsername());
         remote.SetPlayerTag(gameManager.GetRemote().GetUsername());
     }
@@ -55,6 +58,7 @@ public class PlayerManager : MonoBehaviour
     {
         networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
+        remote.healthBar.SetHealth(tempHealth);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
@@ -69,16 +73,21 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckStatus(PlayerBehaviour localPlayerToMove)
     {
+        // HP
+
         if (!localPlayerToMove._alive)
         {
-            localPlayerToMove._alive = true;
-            localPlayerToMove.enemyScore.Increase();
-            countdown.ResetCountdown();
+            //localPlayerToMove._alive = true;
+            //localPlayerToMove.enemyScore.Increase();
+            //countdown.ResetCountdown();
         }
     }
 
     public void SetNetPosition(Vector3 pos)
     { tempNetPos = pos; }
+
+    public void SetNetHealth(float health)
+    { tempHealth = health; }
 
     public bool GetLocalIsHost()
     { return localIsHost; }

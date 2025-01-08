@@ -7,7 +7,7 @@ public class HealthBar : MonoBehaviour
 {
     public Image healthBar;
     
-    public float health;
+    private float _health;
     public float maxHealth;
     
     void Start()
@@ -17,15 +17,24 @@ public class HealthBar : MonoBehaviour
 
     public void TakeDamage()
     {
-        if (health > 0)
-            health --;
+        if (_health > 0)
+            _health--;
 
-        healthBar.fillAmount = health / maxHealth;
+        healthBar.fillAmount = _health / maxHealth;
     }
 
     public void ResetHealth()
     {
-        health = maxHealth;
-        healthBar.fillAmount = health / maxHealth;
+        _health = maxHealth;
+        healthBar.fillAmount = _health / maxHealth;
+    }
+
+    public float GetHealth()
+    { return _health; }
+
+    public void SetHealth(float health)
+    {
+        _health = health;
+        healthBar.fillAmount = _health / maxHealth;
     }
 }

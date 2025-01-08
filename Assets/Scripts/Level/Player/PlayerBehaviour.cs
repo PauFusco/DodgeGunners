@@ -17,9 +17,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public HealthBar healthBar;
 
-    [SerializeField]
-    private TextMeshProUGUI playerBillboard;
-    public Score enemyScore;
+    public TextMeshProUGUI usernameText;
+    public Score score;
 
     private void Start()
     {
@@ -30,7 +29,7 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     public void SetPlayerTag(string username)
-    { playerBillboard.text = username; }
+    { usernameText.text = username; }
 
     public void MoveLeft()
     { transform.position += speed * Time.deltaTime * Vector3.back; }
@@ -50,7 +49,7 @@ public class PlayerBehaviour : MonoBehaviour
     public void MoveDown()
     {
         if (m_jumpCount > 0)
-            rb.AddForce(Vector3.down * jumpForce*3, ForceMode.Impulse);
+            rb.AddForce(Vector3.down * jumpForce * 3, ForceMode.Impulse);
     }
 
     public void SetPosition(Vector3 newPos)
@@ -61,6 +60,12 @@ public class PlayerBehaviour : MonoBehaviour
 
     public Transform GetLocalTransform()
     { return transform; }
+
+    public float GetHealth()
+    { return healthBar.GetHealth(); }
+
+    public float GetScore()
+    { return score.GetScore(); }
 
     public void Die()
     {

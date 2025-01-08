@@ -7,7 +7,7 @@ public class Score : MonoBehaviour
 {
     private TextMeshProUGUI score;
 
-    private int _score = 0;
+    private uint _score = 0;
     
     private void Start()
     {
@@ -19,7 +19,12 @@ public class Score : MonoBehaviour
         score.text = _score.ToString();
     }
 
-    public void Increase() { _score++; }
+    public void Increase() 
+    { _score++; }
 
-    public int GetScore() { return _score; }
+    public uint GetScore() 
+    { return _score; }
+
+    public void SetScore(uint score) 
+    { _score = score; }
 }

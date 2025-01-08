@@ -12,7 +12,7 @@ public class ProjectileBehaviour : MonoBehaviour
             if (player != null)
             {
                 player.healthBar.TakeDamage();
-                if (player.healthBar.health == 0) 
+                if (player.healthBar.GetHealth() == 0) 
                 { 
                     player.Die();
                 }
