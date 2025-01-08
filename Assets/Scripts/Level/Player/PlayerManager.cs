@@ -43,7 +43,8 @@ public class PlayerManager : MonoBehaviour
             tempNetPos = local.transform.position;
         }
 
-        tempHealth = 3;
+        tempHealth = 3f;
+
         local.SetPlayerTag(gameManager.GetLocal().GetUsername());
         remote.SetPlayerTag(gameManager.GetRemote().GetUsername());
     }
@@ -73,7 +74,7 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckStatus(PlayerBehaviour localPlayerToMove)
     {
-        // HP
+        // Score
 
         if (!localPlayerToMove._alive)
         {

@@ -79,6 +79,7 @@ public class NetworkManager : MonoBehaviour
 
             // HP
             float health = playerBReader.ReadSingle();
+            _health = health;
 
             // score
         }
