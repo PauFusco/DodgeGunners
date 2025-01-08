@@ -3,30 +3,31 @@ by Pau Fusco and Júlia Serra
 
 ## Links 
 Link to GitHub: https://github.com/PauFusco/DodgeGunners
-Link to Release: https://github.com/PauFusco/DodgeGunners/releases/tag/v1.0
+Link to Release: https://github.com/PauFusco/DodgeGunners/releases/tag/v2.0
 
 ## Contributions
-We have worked on some tasks together, so both names will appear on some of the tasks
+We have worked together, so both names will appear on some of the tasks
 
-### Menu
-- UI: Pau and Júlia
-- Menu Flow: Pau
-- Menu Script: Pau
-- Create Lobby: Pau
-- Join Lobby: Pau
-- Show Host IP: Júlia
-- Enable Starting game when both players have joined: Júlia
-- Copy IP: Júlia
+### Bugfixes
+- Usernames appearing correctly: Júlia
+- Speeding up player: Júlia
 
 ### Level
-- Score: Júlia
 - Timer: Júlia
-- UI: Júlia
-- Passing Usernames: Pau
-- Player Movement: Júlia
-- Updating and Recieving Movement: Pau
-- Sending Movement: Pau
-- Solving Bugs: Pau and Júlia
+- Healthbar: Júlia
+- Player Jump/Double Jump: Júlia
+- Player Cancel Jump: Júlia
+- Physics: Júlia
+
+### Projectiles
+- Projectile Controller: Pau
+- Projectiles collision: Júlia
+- Shooting: Pau
+
+### Packets
+- Network Management: Pau
+- Packets: Pau
+- Sending and recieving information: Pau
 
 ### Others:
 - Optimization: Pau and Júlia
@@ -34,31 +35,23 @@ We have worked on some tasks together, so both names will appear on some of the 
 
 ## Instructions
 To move, use WASD:
-- W: Up
+- W: Jump
 - A: Left
-- S: Down
+- S: Cancel Jump
 - D: Right
+- Space: Shoot
 
 ## Name of the main scene to run: 
 MenuScene
 
 ## List of difficulties, comments and bugs
 ### Known bugs
-- Build does not take in account the window size, so depending on the proportions you may not see one or both characters as they will be outside the window 
-
-### Difficulties
-Here is a list of solved bugs:
-
-#### Player appearing in incorrect position
-Solved by Júlia. 
-The position that was sent as a string and converted to a Vector3 had an issue, as the float.Parse() was changing decimals into integers.
-Solved by adding "CultureInfo.InvariantCulture" to the function.
-
-#### Both players appearing in the same position
-Solved by Pau.
-Issue in Start() of the PlayerManager
+- IP that appears in Menu is the one from the teacher's computer, will be changed into 6-digit codes to enter to help the user experience and avoid having to search for the IP in console
+- Healthbars and Svore do not always display correctly, Will be corrected by passing the information through the net in next delivery
 
 ### For next delivery
-We have agreed on leaving this features for next delivery:
-- Shoot: Although we started code to shoot and there is a prefab created already, we have agreed to implement it once packets work correctly
-- Score: We have stated that score will be implemented after implementing shooting, as score will be determined by bullet collision
+For this delivery we wanted to focus on the projectiles, as most of the game needed to have the projectiles in order to function and develop it.
+As now we have done the projectiles, for next delivery:
+- 6 digit code to join room: Work in progress, avoids having to search for the IP in console and helps the user as there are less digits to enter
+- Use Amazon web server for the game server
+- Pass the health and score through the net to have correct information
