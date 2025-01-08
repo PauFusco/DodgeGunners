@@ -28,7 +28,7 @@ public class CreateLobby : MonoBehaviour
     private TextMeshProUGUI hostCode;
     private GameManager gameManager;
 
-    private Socket socket;
+    private Socket serverSocket, playerSocket;
 
     private int roomCode;
     private string debugText;
@@ -40,7 +40,7 @@ public class CreateLobby : MonoBehaviour
     private void Start()
     {
         // Put server IP here
-        serverIP = IPAddress.Parse("192.168.56.1");
+        serverIP = IPAddress.Parse("192.168.40.72");
         roomCode = -1;
         roomText = "";
 
@@ -67,9 +67,9 @@ public class CreateLobby : MonoBehaviour
     private void LobbyCreate()
     {
         IPEndPoint serverIPEP = new(serverIP, 9050);
-        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-        socket.Connect(serverIPEP);
+        serverSocket.Connect(serverIPEP);
 
         gameManager.ClearRemote();
 
@@ -80,7 +80,7 @@ public class CreateLobby : MonoBehaviour
         BW.Write((int)type);
         BW.Write(usernameInput.text);
 
-        socket.Send(usernameMS.ToArray());
+        serverSocket.Send(usernameMS.ToArray());
 
         debugText = "Creating Room...";
 
@@ -98,7 +98,7 @@ public class CreateLobby : MonoBehaviour
 
         while (roomCode == -1)
         {
-            recv = socket.ReceiveFrom(data, ref remote);
+            recv = serverSocket.ReceiveFrom(data, ref remote);
 
             if (recv == 0) continue;
 
@@ -119,25 +119,28 @@ public class CreateLobby : MonoBehaviour
 
         while (gameManager.GetRemote().GetIPEndPoint() == null)
         {
-            recv = socket.ReceiveFrom(data, ref remote);
+            recv = serverSocket.ReceiveFrom(data, ref remote);
 
             if (recv == 0) continue;
 
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
+            try
+            { serverSocket.Shutdown(SocketShutdown.Both); }
+            finally
+            { serverSocket.Close(); serverSocket.Dispose(); }
 
             MemoryStream remoteMS = new(data);
             BinaryReader remoteMSBR = new(remoteMS);
 
             string remoteUsername = remoteMSBR.ReadString();
+
             IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
+            IPEndPoint binderIPEP = new(IPAddress.Any, 9051);
 
-            IPEndPoint binderIPEP = new(IPAddress.Any, 50000);
-            socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(binderIPEP);
+            playerSocket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            playerSocket.Bind(binderIPEP);
 
-            IPEndPoint remoteipep = new(remoteIP, 50000);
-            gameManager.AddRemote(remoteUsername, remoteipep, GameManager.NetPlayer.Type.REMOTE, socket);
+            IPEndPoint remoteipep = new(remoteIP, 9051);
+            gameManager.AddRemote(remoteUsername, remoteipep, GameManager.NetPlayer.Type.REMOTE, playerSocket);
 
             gameManager.SetLocal(usernameInput.text, GameManager.NetPlayer.Type.HOST);
 
@@ -148,7 +151,7 @@ public class CreateLobby : MonoBehaviour
     private void LobbyStart()
     {
         byte[] startGame = Encoding.ASCII.GetBytes("StartGame");
-        socket.SendTo(startGame, gameManager.GetRemote().GetIPEndPoint());
+        playerSocket.SendTo(startGame, gameManager.GetRemote().GetIPEndPoint());
 
         SceneManager.LoadScene(1);
     }
@@ -161,6 +164,6 @@ public class CreateLobby : MonoBehaviour
             debugText = "Copied to Clipboard!";
         }
         else
-            debugText = "No IP found!";
+            debugText = "No Code found!";
     }
 }

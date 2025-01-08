@@ -18,7 +18,7 @@ public class JoinLobby : MonoBehaviour
     private TMP_InputField usernameInput, roomCodeInput;
     private GameManager gameManager;
 
-    private Socket socket;
+    private Socket serverSocket, playerSocket;
 
     private bool startGame;
 
@@ -30,7 +30,7 @@ public class JoinLobby : MonoBehaviour
     private void Start()
     {
         // Put server IP here
-        serverIP = IPAddress.Parse("192.168.56.1");
+        serverIP = IPAddress.Parse("192.168.40.72");
 
         startGame = false;
 
@@ -57,9 +57,9 @@ public class JoinLobby : MonoBehaviour
     private void LobbyJoin()
     {
         IPEndPoint serverIPEP = new(serverIP, 9050);
-        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-        socket.Connect(serverIPEP);
+        serverSocket.Connect(serverIPEP);
 
         //debugText = "Waiting to join...";
 
@@ -73,7 +73,7 @@ public class JoinLobby : MonoBehaviour
         BW.Write(usernameInput.text);
         BW.Write(roomCodeInput.text);
 
-        socket.Send(roomRequestMS.ToArray());
+        serverSocket.Send(roomRequestMS.ToArray());
 
         Thread recieveEnemyUsrnm = new(RecieveEnemyUsername);
         recieveEnemyUsrnm.Start();
@@ -87,12 +87,14 @@ public class JoinLobby : MonoBehaviour
         while (true)
         {
             data = new byte[1024];
-            recv = socket.Receive(data);
+            recv = serverSocket.Receive(data);
 
             if (recv == 0) continue;
 
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
+            try
+            { serverSocket.Shutdown(SocketShutdown.Both); }
+            finally
+            { serverSocket.Close(); serverSocket.Dispose(); }
 
             MemoryStream remoteMS = new(data);
             BinaryReader remoteMSBR = new(remoteMS);
@@ -100,11 +102,11 @@ public class JoinLobby : MonoBehaviour
             string remoteUsername = remoteMSBR.ReadString();
             IPAddress remoteIP = IPAddress.Parse(remoteMSBR.ReadString());
 
-            IPEndPoint hostIPEP = new(remoteIP, 50000);
-            socket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            socket.Connect(hostIPEP);
+            IPEndPoint hostIPEP = new(remoteIP, 9051);
+            playerSocket = new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            playerSocket.Connect(hostIPEP);
 
-            gameManager.AddRemote(remoteUsername, hostIPEP, GameManager.NetPlayer.Type.HOST, socket);
+            gameManager.AddRemote(remoteUsername, hostIPEP, GameManager.NetPlayer.Type.HOST, playerSocket);
 
             debugText = "You have joined " + remoteIP.ToString() + "'s lobby!";
 
@@ -123,7 +125,7 @@ public class JoinLobby : MonoBehaviour
         while (true)
         {
             data = new byte[1024];
-            recv = socket.Receive(data);
+            recv = playerSocket.Receive(data);
 
             if (recv == 0) continue;
 
