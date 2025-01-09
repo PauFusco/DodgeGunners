@@ -4,6 +4,7 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
+
     [SerializeField]
     private Countdown countdown;
 
@@ -58,8 +59,30 @@ public class PlayerManager : MonoBehaviour
     {
         networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
-        remote.healthBar.SetHealth(tempHealth);
-        remote.score.SetScore(tempScore);
+        remote.healthBarScript.SetHealth(tempHealth);
+        remote.scoreScript.SetScore(tempScore);
+
+        TimerAndScoreCheck();
+    }
+
+    private void TimerAndScoreCheck()
+    {
+        if (local.GetScore() < 3 || remote.GetScore() < 3)
+        {
+            if (countdown.GetRoundTime() <= 0)
+            { NewRound(); }
+        }
+        else
+        {
+        }
+    }
+
+    private void NewRound()
+    {
+        countdown.ResetCountdown();
+        Vector3 startPos = localIsHost ? new(0, 2.5f, -5) : new(0, 2.5f, 5);
+        local.ResetHealth();
+        local.SetPosition(startPos);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
@@ -74,16 +97,18 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckStatus()
     {
-        if (!local.isAlive) 
+        if (!local.isAlive)
         {
-            remote.score.Increase();
-            local.healthBar.ResetHealth();
+            remote.scoreScript.Increase();
+            NewRound();
+            local.healthBarScript.ResetHealth();
             local.isAlive = true;
         }
         if (!remote.isAlive)
         {
-            local.score.Increase();
-            remote.healthBar.ResetHealth();
+            local.scoreScript.Increase();
+            NewRound();
+            remote.healthBarScript.ResetHealth();
             remote.isAlive = true;
         }
     }

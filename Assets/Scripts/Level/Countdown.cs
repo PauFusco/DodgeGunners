@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
@@ -13,6 +11,7 @@ public class Countdown : MonoBehaviour
     private void Awake()
     {
         m_TimerText = GetComponent<TMP_Text>();
+        m_Time = startTime;
     }
 
     private void Update()
@@ -23,5 +22,8 @@ public class Countdown : MonoBehaviour
     }
 
     public void ResetCountdown()
-    {  m_Time = startTime; }
+    { m_Time = startTime; }
+
+    public float GetRoundTime()
+    { return m_Time; }
 }

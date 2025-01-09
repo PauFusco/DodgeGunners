@@ -1174,7 +1174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b96e597b498023942a058df95509df42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTime: 60
+  startTime: 10
 --- !u!1 &1099996428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1922,9 +1922,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 189394757}
     - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: scoreScript
+      value: 
+      objectReference: {fileID: 189394757}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: usernameText
       value: 
       objectReference: {fileID: 2097326851}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: healthBarScript
+      value: 
+      objectReference: {fileID: 1973588051}
     - target: {fileID: 5499614588063291116, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_Name
       value: P2
@@ -2023,9 +2031,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 638901920}
     - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: scoreScript
+      value: 
+      objectReference: {fileID: 638901920}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: usernameText
       value: 
       objectReference: {fileID: 3308299311466160283}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: healthBarScript
+      value: 
+      objectReference: {fileID: 542220625}
     - target: {fileID: 5499614588063291116, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: m_Name
       value: P1
