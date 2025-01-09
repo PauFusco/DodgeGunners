@@ -5,7 +5,6 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Collections.Generic;
-using TMPro;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -13,7 +12,6 @@ public class NetworkManager : MonoBehaviour
     {
         PLAYER,
         PROJECTILE,
-        GAME_DATA,
         DEFAULT
     }
 
@@ -27,6 +25,9 @@ public class NetworkManager : MonoBehaviour
             BinaryWriter playerBWriter = new(playerMStream);
 
             playerBWriter.Write((int)_type);
+
+            // flags to byte
+            // frame to byte
 
             // position to byte
             playerBWriter.Write(playerBHToSend.GetLocalTransform().position.x);
@@ -55,6 +56,9 @@ public class NetworkManager : MonoBehaviour
 
             _type = (PacketType)playerBReader.ReadInt32();
 
+            // frame
+            // flags
+
             //position
             Vector3 newPosition = new()
             {
@@ -72,12 +76,19 @@ public class NetworkManager : MonoBehaviour
                 z = playerBReader.ReadSingle()
             };
             _rotation = Quaternion.Euler(newERotation);
+
+            // HP
+            _health = playerBReader.ReadSingle();
+
+            // score
+            _score = playerBReader.ReadInt32();
         }
 
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
-
+        private float _health = new();
+        private int _score = new();
         private readonly PacketType _type;
 
         public byte[] GetBuffer()
@@ -88,6 +99,12 @@ public class NetworkManager : MonoBehaviour
 
         public Quaternion GetRotation()
         { return _rotation; }
+
+        public float GetHealth()
+        { return _health; }
+        
+        public int GetScore()
+        { return _score; }
     }
 
     public class ProjectilesPacket
@@ -174,51 +191,6 @@ public class NetworkManager : MonoBehaviour
         { return _netprojectiles; }
     }
 
-    public class GameInfoPacket
-    {
-        public GameInfoPacket(PlayerBehaviour playerBHToSend)
-        {
-            _type = PacketType.GAME_DATA;
-
-            MemoryStream gameMStream = new();
-            BinaryWriter gameBWriter = new(gameMStream);
-
-            gameBWriter.Write((int)_type);
-
-            gameBWriter.Write(playerBHToSend.GetHealth());
-
-            gameBWriter.Write(playerBHToSend.GetScore());
-
-            _data = gameMStream.ToArray();
-        }
-
-        public GameInfoPacket(byte[] data, PlayerBehaviour playerBHToModify)
-        {
-            MemoryStream gameMStream = new(data);
-            BinaryReader gameBReader = new(gameMStream);
-
-            _type = (PacketType)gameBReader.ReadInt32();
-
-            _health = gameBReader.ReadSingle();
-
-            _score = gameBReader.ReadInt32();
-        }
-
-        private readonly byte[] _data;
-        private readonly float _health;
-        private readonly int _score;
-        private readonly PacketType _type;
-
-        public byte[] GetBuffer()
-        { return _data; }
-
-        public float GetHealth()
-        { return _health; }
-
-        public int GetScore()
-        { return _score; }
-    }
-
     [SerializeField]
     private GameObject playerManagerObj;
 
@@ -259,16 +231,6 @@ public class NetworkManager : MonoBehaviour
         else socket.Send(localPacket.GetBuffer());
     }
 
-    public void SendNetGameInfo(PlayerBehaviour localPlayer)
-    {
-        GameInfoPacket GIPacket = new(localPlayer);
-
-        Socket socket = gameManager.GetRemote().GetSocket();
-
-        if (playerManager.GetLocalIsHost()) socket.SendTo(GIPacket.GetBuffer(), gameManager.GetRemote().GetEndPoint());
-        else socket.Send(GIPacket.GetBuffer());
-    }
-
     public void RecieveNetInfo()
     {
         Socket socket = gameManager.GetRemote().GetSocket();
@@ -298,17 +260,13 @@ public class NetworkManager : MonoBehaviour
                 case PacketType.PLAYER:
                     PlayerPacket PlPacket = new(data, playerManager.GetRemote());
                     playerManager.SetNetPosition(PlPacket.GetPosition());
+                    playerManager.SetNetHealth(PlPacket.GetHealth());
+                    playerManager.SetNetScore(PlPacket.GetScore());
                     break;
 
                 case PacketType.PROJECTILE:
                     ProjectilesPacket PrPacket = new(data);
                     NetProjectiles = PrPacket.GetNetProjectiles();
-                    break;
-
-                case PacketType.GAME_DATA:
-                    GameInfoPacket GPacket = new(data, playerManager.GetRemote());
-                    playerManager.SetNetHealth(GPacket.GetHealth());
-                    playerManager.SetNetScore(GPacket.GetScore());
                     break;
             }
         }

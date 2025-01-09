@@ -20,8 +20,6 @@ public class PlayerBehaviour : MonoBehaviour
     public TextMeshProUGUI usernameText;
     public Score score;
 
-    public bool gameInfoUpdated = false;
-
     private void Start()
     {
         isAlive = true;
@@ -51,7 +49,7 @@ public class PlayerBehaviour : MonoBehaviour
     public void MoveDown()
     {
         if (m_jumpCount > 0)
-            rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
+            rb.AddForce(Vector3.down * jumpForce * 3, ForceMode.Impulse);
     }
 
     public void SetPosition(Vector3 newPos)
@@ -68,12 +66,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     public int GetScore()
     { return score.GetScore(); }
-
-    public void TakeDamage()
-    {
-        healthBar.TakeDamage();
-        gameInfoUpdated = true;
-    }
 
     public void Die()
     { isAlive = false; }

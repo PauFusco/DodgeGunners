@@ -1,14 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
     public Image healthBar;
-
+    
     private float _health;
     public float maxHealth;
-
-    private void Start()
+    
+    void Start()
     {
         ResetHealth();
     }

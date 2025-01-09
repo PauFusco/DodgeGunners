@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileBehaviour : MonoBehaviour
@@ -9,9 +11,9 @@ public class ProjectileBehaviour : MonoBehaviour
             var player = other.GetComponent<PlayerBehaviour>();
             if (player != null)
             {
-                player.TakeDamage();
-                if (player.healthBar.GetHealth() == 0)
-                {
+                player.healthBar.TakeDamage();
+                if (player.healthBar.GetHealth() == 0) 
+                { 
                     player.Die();
                 }
             }
