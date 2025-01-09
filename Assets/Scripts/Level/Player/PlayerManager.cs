@@ -4,6 +4,7 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
+
     [SerializeField]
     private Countdown countdown;
 
@@ -57,7 +58,15 @@ public class PlayerManager : MonoBehaviour
     private void FixedUpdate()
     {
         networkManager.SendPlayerNetInfo(local);
+
         remote.SetPosition(tempNetPos);
+
+        if (local.gameInfoUpdated)
+        {
+            networkManager.SendNetGameInfo(local);
+            local.gameInfoUpdated = false;
+        }
+
         remote.healthBar.SetHealth(tempHealth);
         remote.score.SetScore(tempScore);
     }
@@ -74,7 +83,7 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckStatus()
     {
-        if (!local.isAlive) 
+        if (!local.isAlive)
         {
             remote.score.Increase();
             local.healthBar.ResetHealth();
