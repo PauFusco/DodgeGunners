@@ -15,16 +15,15 @@ public class PlayerBehaviour : MonoBehaviour
     private readonly UInt16 _score;
     public bool isAlive = true;
 
-    public HealthBar healthBar;
+    public HealthBar healthBarScript;
 
     public TextMeshProUGUI usernameText;
-    public Score score;
+    public Score scoreScript;
 
     private void Start()
     {
         isAlive = true;
-        rb = GetComponent<Rigidbody>();
-        if (rb == null)
+        if (!TryGetComponent<Rigidbody>(out rb))
             Debug.LogError("Rigidbody is missing on the player GameObject");
     }
 
@@ -49,7 +48,7 @@ public class PlayerBehaviour : MonoBehaviour
     public void MoveDown()
     {
         if (m_jumpCount > 0)
-            rb.AddForce(Vector3.down * jumpForce * 3, ForceMode.Impulse);
+            rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
     }
 
     public void SetPosition(Vector3 newPos)
@@ -61,11 +60,14 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform GetLocalTransform()
     { return transform; }
 
+    public void ResetHealth()
+    { healthBarScript.SetHealth(3); }
+
     public float GetHealth()
-    { return healthBar.GetHealth(); }
+    { return healthBarScript.GetHealth(); }
 
     public int GetScore()
-    { return score.GetScore(); }
+    { return scoreScript.GetScore(); }
 
     public void Die()
     { isAlive = false; }

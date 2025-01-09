@@ -56,9 +56,6 @@ public class NetworkManager : MonoBehaviour
 
             _type = (PacketType)playerBReader.ReadInt32();
 
-            // frame
-            // flags
-
             //position
             Vector3 newPosition = new()
             {
@@ -87,8 +84,8 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
-        private float _health = new();
-        private int _score = new();
+        private readonly float _health = new();
+        private readonly int _score = new();
         private readonly PacketType _type;
 
         public byte[] GetBuffer()
@@ -102,7 +99,7 @@ public class NetworkManager : MonoBehaviour
 
         public float GetHealth()
         { return _health; }
-        
+
         public int GetScore()
         { return _score; }
     }
