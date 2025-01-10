@@ -14,7 +14,7 @@ public class ProjectileController : MonoBehaviour
         private Vector3 _spawnposition;
         private Vector3 _spawntocurrentposition;
 
-        public GameObject projectileObj;
+        public GameObject _projectileObj;
 
         public bool IsDestroyed { get; private set; } = false;
 
@@ -44,7 +44,7 @@ public class ProjectileController : MonoBehaviour
         public Vector3 GetSpawnToCurrentPosition()
         { return _spawntocurrentposition; }
 
-        public void MarkAsDestroyed() 
+        public void MarkAsDestroyed()
         { IsDestroyed = true; }
     }
 
@@ -77,7 +77,7 @@ public class ProjectileController : MonoBehaviour
         for (int i = localProjectiles.Count - 1; i >= 0; i--)
         {
             var proj = localProjectiles[i];
-            if (proj.projectileObj == null)
+            if (proj._projectileObj == null)
             {
                 localProjectiles.RemoveAt(i);
                 continue;
@@ -86,16 +86,16 @@ public class ProjectileController : MonoBehaviour
             float currentLifetime = Time.time - proj.GetSpawnTime();
             if (currentLifetime >= proj.GetLifetimeLimit())
             {
-                Destroy(proj.projectileObj);
+                Destroy(proj._projectileObj);
                 localProjectiles.RemoveAt(i);
                 continue;
             }
 
-            Vector3 newPos = proj.projectileObj.transform.position;
+            Vector3 newPos = proj._projectileObj.transform.position;
             newPos.z += proj.GetSpawnPosition().z <= 0 ?
                 proj.GetSpeed() * currentLifetime : -proj.GetSpeed() * currentLifetime;
 
-            proj.projectileObj.transform.position = newPos;
+            proj._projectileObj.transform.position = newPos;
         }
     }
 
@@ -129,12 +129,27 @@ public class ProjectileController : MonoBehaviour
         remoteProjectiles.Clear();
     }
 
+    public void ClearAllProjectiles()
+    {
+        foreach (var proj in remoteProjectiles)
+        {
+            Destroy(proj._projectileobj);
+        }
+        remoteProjectiles.Clear();
+
+        foreach (var proj in localProjectiles)
+        {
+            Destroy(proj._projectileObj);
+        }
+        localProjectiles.Clear();
+    }
+
     public void LocalSpawnProjectile(Vector3 pos)
     {
         Quaternion rotation = new(0.7071068f, 0, 0, 0.7071068f);
 
         LocalProjectile proj = new(pos);
-        proj.projectileObj = (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), rotation);
+        proj._projectileObj = (GameObject)Instantiate(projectilePF, proj.GetSpawnPosition(), rotation);
 
         localProjectiles.Add(proj);
     }

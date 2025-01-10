@@ -137,14 +137,14 @@ public class NetworkManager : MonoBehaviour
 
             foreach (ProjectileController.LocalProjectile proj in projectileList)
             {
-                projectileBWriter.Write(proj.projectileObj.transform.position.x);
-                projectileBWriter.Write(proj.projectileObj.transform.position.y);
-                projectileBWriter.Write(proj.projectileObj.transform.position.z);
+                projectileBWriter.Write(proj._projectileObj.transform.position.x);
+                projectileBWriter.Write(proj._projectileObj.transform.position.y);
+                projectileBWriter.Write(proj._projectileObj.transform.position.z);
 
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.w);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.x);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.y);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.z);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.w);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.x);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.y);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.z);
             }
 
             _data = projectileMStream.ToArray();

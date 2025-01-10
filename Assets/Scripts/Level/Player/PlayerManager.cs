@@ -8,6 +8,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     private Countdown countdown;
 
+    [SerializeField]
+    private MenuController menuController;
+
     private GameManager gameManager;
     private PlayerBehaviour local, remote;
     private NetworkManager networkManager;
@@ -67,13 +70,21 @@ public class PlayerManager : MonoBehaviour
 
     private void TimerAndScoreCheck()
     {
-        if (local.GetScore() < 3 || remote.GetScore() < 3)
+        if (local.GetScore() < 3 && remote.GetScore() < 3)
         {
             if (countdown.GetRoundTime() <= 0)
             { NewRound(); }
         }
         else
         {
+            local.canMove = false;
+            remote.canMove = false;
+            projectileController.ClearAllProjectiles();
+
+            // menu / popup
+            string winnerName = local.GetScore() >= 3 ? gameManager.GetLocal().GetUsername() : gameManager.GetRemote().GetUsername();
+
+            menuController.EnableMenu(winnerName);
         }
     }
 
@@ -92,7 +103,7 @@ public class PlayerManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
 
-        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
+        if (Input.GetKeyDown(KeyCode.Space) && local.canMove) projectileController.LocalSpawnProjectile(GetBulletDirection());
     }
 
     private void CheckStatus()

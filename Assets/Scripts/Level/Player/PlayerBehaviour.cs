@@ -20,6 +20,8 @@ public class PlayerBehaviour : MonoBehaviour
     public TextMeshProUGUI usernameText;
     public Score scoreScript;
 
+    public bool canMove = true;
+
     private void Start()
     {
         isAlive = true;
@@ -31,14 +33,14 @@ public class PlayerBehaviour : MonoBehaviour
     { usernameText.text = username; }
 
     public void MoveLeft()
-    { transform.position += speed * Time.deltaTime * Vector3.back; }
+    { if (canMove) transform.position += speed * Time.deltaTime * Vector3.back; }
 
     public void MoveRight()
-    { transform.position += speed * Time.deltaTime * Vector3.forward; }
+    { if (canMove) transform.position += speed * Time.deltaTime * Vector3.forward; }
 
     public void MoveUp()
     {
-        if (m_jumpCount < maxJumps)
+        if (m_jumpCount < maxJumps && canMove)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
@@ -47,7 +49,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void MoveDown()
     {
-        if (m_jumpCount > 0)
+        if (m_jumpCount > 0 && canMove)
             rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
     }
 
