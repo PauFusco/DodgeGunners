@@ -92,18 +92,24 @@ public class PlayerManager : MonoBehaviour
     {
         countdown.ResetCountdown();
         Vector3 startPos = localIsHost ? new(0, 2.5f, -5) : new(0, 2.5f, 5);
-        local.ResetHealth();
+        local.ResetValues();
         local.SetPosition(startPos);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
     {
+        if (!local.canMove) return;
+
         if (Input.GetKeyDown(KeyCode.W)) localPlayerToMove.MoveUp();
         if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
         if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
 
-        if (Input.GetKeyDown(KeyCode.Space) && local.canMove) projectileController.LocalSpawnProjectile(GetBulletDirection());
+        if (Input.GetKeyDown(KeyCode.Space) && local.GetAmmo() > 0)
+        {
+            projectileController.LocalSpawnProjectile(GetBulletDirection());
+            local.ReduceAmmo();
+        }
     }
 
     private void CheckStatus()

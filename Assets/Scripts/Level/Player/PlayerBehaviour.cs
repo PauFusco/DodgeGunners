@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -12,7 +11,6 @@ public class PlayerBehaviour : MonoBehaviour
     private int m_jumpCount = 0;
     public int maxJumps = 2;
 
-    private readonly UInt16 _score;
     public bool isAlive = true;
 
     public HealthBar healthBarScript;
@@ -22,25 +20,32 @@ public class PlayerBehaviour : MonoBehaviour
 
     public bool canMove = true;
 
+    [SerializeField]
+    private int baseAmmo = 1;
+
+    private int ammo;
+
     private void Start()
     {
         isAlive = true;
         if (!TryGetComponent<Rigidbody>(out rb))
             Debug.LogError("Rigidbody is missing on the player GameObject");
+
+        ammo = baseAmmo;
     }
 
     public void SetPlayerTag(string username)
     { usernameText.text = username; }
 
     public void MoveLeft()
-    { if (canMove) transform.position += speed * Time.deltaTime * Vector3.back; }
+    { transform.position += speed * Time.deltaTime * Vector3.back; }
 
     public void MoveRight()
-    { if (canMove) transform.position += speed * Time.deltaTime * Vector3.forward; }
+    { transform.position += speed * Time.deltaTime * Vector3.forward; }
 
     public void MoveUp()
     {
-        if (m_jumpCount < maxJumps && canMove)
+        if (m_jumpCount < maxJumps)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
@@ -62,14 +67,23 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform GetLocalTransform()
     { return transform; }
 
-    public void ResetHealth()
-    { healthBarScript.SetHealth(3); }
+    public void ResetValues()
+    {
+        healthBarScript.SetHealth(3);
+        ammo = baseAmmo;
+    }
 
     public float GetHealth()
     { return healthBarScript.GetHealth(); }
 
     public int GetScore()
     { return scoreScript.GetScore(); }
+
+    public int GetAmmo()
+    { return ammo; }
+
+    public void ReduceAmmo()
+    { ammo--; }
 
     public void Die()
     { isAlive = false; }

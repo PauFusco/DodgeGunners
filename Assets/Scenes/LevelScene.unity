@@ -760,7 +760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 1219266615}
-  maxHealth: 3
+  maxHealth: 1
 --- !u!1 &616861183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2089,6 +2089,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: baseAmmo
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: scoreScript
       value: 
       objectReference: {fileID: 638901920}
@@ -2274,7 +2278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 453268429}
-  maxHealth: 3
+  maxHealth: 1
 --- !u!1 &2073095979
 GameObject:
   m_ObjectHideFlags: 0
@@ -2433,6 +2437,10 @@ PrefabInstance:
       propertyPath: score
       value: 
       objectReference: {fileID: 189394757}
+    - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: baseAmmo
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5231007391096528162, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
       propertyPath: healthBar
       value: 
