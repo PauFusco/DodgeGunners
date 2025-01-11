@@ -49,7 +49,7 @@ public class NetworkManager : MonoBehaviour
             _data = playerMStream.ToArray();
         }
 
-        public PlayerPacket(byte[] data, PlayerBehaviour playerBHToModify)
+        public PlayerPacket(byte[] data)
         {
             MemoryStream playerMStream = new(data);
             BinaryReader playerBReader = new(playerMStream);
@@ -84,8 +84,8 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
-        private readonly float _health = new();
-        private readonly int _score = new();
+        private readonly float _health;
+        private readonly int _score;
         private readonly PacketType _type;
 
         public byte[] GetBuffer()
@@ -255,7 +255,7 @@ public class NetworkManager : MonoBehaviour
             switch (ptype)
             {
                 case PacketType.PLAYER:
-                    PlayerPacket PlPacket = new(data, playerManager.GetRemote());
+                    PlayerPacket PlPacket = new(data);
                     playerManager.SetNetPosition(PlPacket.GetPosition());
                     playerManager.SetNetHealth(PlPacket.GetHealth());
                     playerManager.SetNetScore(PlPacket.GetScore());
