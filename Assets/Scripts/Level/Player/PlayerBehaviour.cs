@@ -4,26 +4,24 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    private Rigidbody rb;
-    public float speed = 2.0f;
+    [SerializeField]
+    private int baseAmmo = 1;
 
+    private Rigidbody rb;
+
+    public float speed = 2.0f;
     public float jumpForce = 5.0f;
     private int m_jumpCount = 0;
     public int maxJumps = 2;
 
-    public bool isAlive = true;
-
-    public HealthBar healthBarScript;
+    private int ammo;
 
     public TextMeshProUGUI usernameText;
+    public HealthBar healthBarScript;
     public Score scoreScript;
 
+    public bool isAlive = true;
     public bool canMove = true;
-
-    [SerializeField]
-    private int baseAmmo = 1;
-
-    private int ammo;
 
     private void Start()
     {

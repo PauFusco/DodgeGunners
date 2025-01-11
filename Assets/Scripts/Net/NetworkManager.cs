@@ -188,10 +188,8 @@ public class NetworkManager : MonoBehaviour
         { return _netprojectiles; }
     }
 
-    [SerializeField]
-    private GameObject playerManagerObj;
+    [SerializeField] private PlayerManager playerManager;
 
-    private PlayerManager playerManager;
     private GameManager gameManager;
 
     private List<ProjectilesPacket.MockProjectile> NetProjectiles = new();
@@ -199,7 +197,6 @@ public class NetworkManager : MonoBehaviour
     private void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        playerManager = playerManagerObj.GetComponent<PlayerManager>();
 
         Thread receiveNetMovement = new(RecieveNetInfo);
         receiveNetMovement.Start();

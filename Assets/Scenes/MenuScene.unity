@@ -1091,7 +1091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &368537235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2572,11 +2572,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 660bc29339416f44790273e0c5080a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joinObj: {fileID: 1476179589}
-  usernameObj: {fileID: 581494829}
-  hostIPObj: {fileID: 1870384614}
-  gameManagerObj: {fileID: 1059067548}
-  logObj: {fileID: 602385546}
+  gameManager: {fileID: 1059067550}
+  join: {fileID: 1476179591}
+  usernameInput: {fileID: 581494831}
+  hostIPInput: {fileID: 1870384616}
+  log: {fileID: 602385548}
 --- !u!1 &895311500
 GameObject:
   m_ObjectHideFlags: 0
@@ -3810,12 +3810,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c58f5eadf15eb419745b6e36e64e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createObj: {fileID: 627876867}
-  startObj: {fileID: 297793084}
-  usernameInputFieldObj: {fileID: 913370323}
-  hostObj: {fileID: 1330904097}
-  logObj: {fileID: 529499178}
-  gameManagerObj: {fileID: 1059067548}
+  gameManager: {fileID: 1059067550}
+  createButton: {fileID: 627876869}
+  startButton: {fileID: 297793086}
+  log: {fileID: 529499180}
+  hostIP: {fileID: 1330904100}
+  usernameInput: {fileID: 913370325}
 --- !u!1 &1437338290
 GameObject:
   m_ObjectHideFlags: 0
@@ -4258,7 +4258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1504523151
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4451,14 +4451,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdf83a4567bea694f819792902d86fb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CreateLobby: {fileID: 286730519}
-  JoinLobby: {fileID: 1640706741}
-  Quit: {fileID: 775942554}
+  JoinParent: {fileID: 1504523150}
   BaseParent: {fileID: 1437338290}
   CreateParent: {fileID: 368537234}
-  JoinParent: {fileID: 1504523150}
-  CreateBack: {fileID: 210826370}
-  JoinBack: {fileID: 1649917389}
+  CreateLobbyButton: {fileID: 286730521}
+  JoinLobbyButton: {fileID: 1640706743}
+  QuitButton: {fileID: 775942556}
+  CreateLobbyBackButton: {fileID: 210826372}
+  JoinLobbyBackButton: {fileID: 1649917391}
 --- !u!4 &1603051642
 Transform:
   m_ObjectHideFlags: 0

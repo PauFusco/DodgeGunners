@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    [SerializeField]
-    private Object projectilePF;
+    [SerializeField] private NetworkManager networkManager;
+    [SerializeField] private Object projectilePF;
 
     public class LocalProjectile
     {
@@ -59,18 +59,8 @@ public class ProjectileController : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private GameObject networkManagerObj;
-
-    private NetworkManager networkManager;
-
     private readonly List<LocalProjectile> localProjectiles = new();
     private readonly List<RemoteProjectile> remoteProjectiles = new();
-
-    private void Start()
-    {
-        networkManager = networkManagerObj.GetComponent<NetworkManager>();
-    }
 
     private void Update()
     {

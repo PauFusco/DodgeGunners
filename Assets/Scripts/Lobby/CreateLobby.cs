@@ -6,32 +6,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class CreateLobby : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject createObj, startObj, usernameInputFieldObj, hostObj, logObj, gameManagerObj;
-
-    private Button createButton, startButton;
-    private TextMeshProUGUI log;
-    private TMP_InputField usernameInput;
-    private TextMeshProUGUI hostIP;
-    private GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private Button createButton, startButton;
+    [SerializeField] private TextMeshProUGUI log, hostIP;
+    [SerializeField] private TMP_InputField usernameInput;
 
     private Socket socket;
 
-    private string debugText;
+    private string debugText = "";
     private bool startGame = false;
 
     private void Start()
     {
-        createButton = createObj.GetComponent<Button>();
-        startButton = startObj.GetComponent<Button>();
-        log = logObj.GetComponent<TextMeshProUGUI>();
-        usernameInput = usernameInputFieldObj.GetComponent<TMP_InputField>();
-        hostIP = hostObj.GetComponent<TextMeshProUGUI>();
-        gameManager = gameManagerObj.GetComponent<GameManager>();
-
         createButton.onClick.AddListener(LobbyCreate);
         startButton.onClick.AddListener(LobbyStart);
         startButton.interactable = startGame;

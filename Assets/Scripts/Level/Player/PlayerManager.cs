@@ -2,19 +2,17 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
+    [SerializeField] private GameObject hostObj, remoteObj;
 
-    [SerializeField]
-    private Countdown countdown;
-
-    [SerializeField]
-    private MenuController menuController;
+    [SerializeField] private NetworkManager networkManager;
+    [SerializeField] private ProjectileController projectileController;
+    [SerializeField] private MenuController menuController;
+    [SerializeField] private Countdown countdown;
 
     private GameManager gameManager;
+
     private PlayerBehaviour local, remote;
-    private NetworkManager networkManager;
-    private ProjectileController projectileController;
+
     private bool localIsHost;
 
     private Vector3 tempNetPos;
@@ -25,9 +23,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
 
         if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.REMOTE)
         {
