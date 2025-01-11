@@ -795,9 +795,10 @@ MonoBehaviour:
   hostObj: {fileID: 1911138779}
   remoteObj: {fileID: 2097326850}
   networkManager: {fileID: 1805400981}
-  projectileController: {fileID: 1933982320}
   menuController: {fileID: 1919761052}
+  projectileController: {fileID: 1933982320}
   countdown: {fileID: 1053944749}
+  cameraShake: {fileID: 963194229}
   bulletOffset: 1
 --- !u!4 &509654363
 Transform:
@@ -1574,6 +1575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337ff2b98d3fdd3489c5489d943afb1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duration: 0.15
+  magnitude: 2
 --- !u!1 &1016378100
 GameObject:
   m_ObjectHideFlags: 0

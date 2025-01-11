@@ -5,8 +5,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject hostObj, remoteObj;
 
     [SerializeField] private NetworkManager networkManager;
-    [SerializeField] private ProjectileController projectileController;
     [SerializeField] private MenuController menuController;
+    [SerializeField] private ProjectileController projectileController;
     [SerializeField] private Countdown countdown;
 
     private GameManager gameManager;
