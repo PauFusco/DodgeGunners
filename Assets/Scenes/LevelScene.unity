@@ -3313,8 +3313,13 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5559222031599903818, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
+      propertyPath: m_LocalScale.x
+      value: -0.01219922
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2535211632034758987, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8de8b51f0458ac4bb43477d37c4ab12, type: 3}
