@@ -9,33 +9,19 @@ using UnityEngine.SceneManagement;
 
 public class JoinLobby : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject joinObj, usernameObj, hostIPObj, gameManagerObj, logObj;
-
-    private Button join;
-    private TMP_InputField usernameInput, hostIPInput;
-    private GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private Button join;
+    [SerializeField] private TMP_InputField usernameInput, hostIPInput;
+    [SerializeField] private TextMeshProUGUI log;
 
     private IPEndPoint hostIPEP;
     private Socket socket;
 
-    private bool startGame;
-
-    private TextMeshProUGUI log;
-    private string debugText;
+    private string debugText = "";
+    private bool startGame = false;
 
     private void Start()
     {
-        startGame = false;
-
-        join = joinObj.GetComponent<Button>();
-        usernameInput = usernameObj.GetComponent<TMP_InputField>();
-        hostIPInput = hostIPObj.GetComponent<TMP_InputField>();
-
-        gameManager = gameManagerObj.GetComponent<GameManager>();
-
-        log = logObj.GetComponent<TextMeshProUGUI>();
-
         join.onClick.AddListener(LobbyJoin);
     }
 

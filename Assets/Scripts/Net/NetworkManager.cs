@@ -49,15 +49,12 @@ public class NetworkManager : MonoBehaviour
             _data = playerMStream.ToArray();
         }
 
-        public PlayerPacket(byte[] data, PlayerBehaviour playerBHToModify)
+        public PlayerPacket(byte[] data)
         {
             MemoryStream playerMStream = new(data);
             BinaryReader playerBReader = new(playerMStream);
 
             _type = (PacketType)playerBReader.ReadInt32();
-
-            // frame
-            // flags
 
             //position
             Vector3 newPosition = new()
@@ -87,8 +84,8 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
-        private float _health = new();
-        private int _score = new();
+        private readonly float _health;
+        private readonly int _score;
         private readonly PacketType _type;
 
         public byte[] GetBuffer()
@@ -102,7 +99,7 @@ public class NetworkManager : MonoBehaviour
 
         public float GetHealth()
         { return _health; }
-        
+
         public int GetScore()
         { return _score; }
     }
@@ -140,14 +137,14 @@ public class NetworkManager : MonoBehaviour
 
             foreach (ProjectileController.LocalProjectile proj in projectileList)
             {
-                projectileBWriter.Write(proj.projectileObj.transform.position.x);
-                projectileBWriter.Write(proj.projectileObj.transform.position.y);
-                projectileBWriter.Write(proj.projectileObj.transform.position.z);
+                projectileBWriter.Write(proj._projectileObj.transform.position.x);
+                projectileBWriter.Write(proj._projectileObj.transform.position.y);
+                projectileBWriter.Write(proj._projectileObj.transform.position.z);
 
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.w);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.x);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.y);
-                projectileBWriter.Write(proj.projectileObj.transform.rotation.z);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.w);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.x);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.y);
+                projectileBWriter.Write(proj._projectileObj.transform.rotation.z);
             }
 
             _data = projectileMStream.ToArray();
@@ -191,10 +188,8 @@ public class NetworkManager : MonoBehaviour
         { return _netprojectiles; }
     }
 
-    [SerializeField]
-    private GameObject playerManagerObj;
+    [SerializeField] private PlayerManager playerManager;
 
-    private PlayerManager playerManager;
     private GameManager gameManager;
 
     private List<ProjectilesPacket.MockProjectile> NetProjectiles = new();
@@ -202,7 +197,6 @@ public class NetworkManager : MonoBehaviour
     private void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        playerManager = playerManagerObj.GetComponent<PlayerManager>();
 
         Thread receiveNetMovement = new(RecieveNetInfo);
         receiveNetMovement.Start();
@@ -258,7 +252,7 @@ public class NetworkManager : MonoBehaviour
             switch (ptype)
             {
                 case PacketType.PLAYER:
-                    PlayerPacket PlPacket = new(data, playerManager.GetRemote());
+                    PlayerPacket PlPacket = new(data);
                     playerManager.SetNetPosition(PlPacket.GetPosition());
                     playerManager.SetNetHealth(PlPacket.GetHealth());
                     playerManager.SetNetScore(PlPacket.GetScore());

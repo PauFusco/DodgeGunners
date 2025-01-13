@@ -1,31 +1,35 @@
 using System;
-using System.Text;
 using TMPro;
 using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    private Rigidbody rb;
-    public float speed = 2.0f;
+    [SerializeField]
+    private int baseAmmo = 1;
 
+    private Rigidbody rb;
+
+    public float speed = 2.0f;
     public float jumpForce = 5.0f;
     private int m_jumpCount = 0;
     public int maxJumps = 2;
 
-    private readonly UInt16 _score;
-    public bool isAlive = true;
-
-    public HealthBar healthBar;
+    private int ammo;
 
     public TextMeshProUGUI usernameText;
-    public Score score;
+    public HealthBar healthBarScript;
+    public Score scoreScript;
+
+    public bool isAlive = true;
+    public bool canMove = true;
 
     private void Start()
     {
         isAlive = true;
-        rb = GetComponent<Rigidbody>();
-        if (rb == null)
+        if (!TryGetComponent<Rigidbody>(out rb))
             Debug.LogError("Rigidbody is missing on the player GameObject");
+
+        ammo = baseAmmo;
     }
 
     public void SetPlayerTag(string username)
@@ -48,8 +52,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void MoveDown()
     {
-        if (m_jumpCount > 0)
-            rb.AddForce(Vector3.down * jumpForce * 3, ForceMode.Impulse);
+        if (m_jumpCount > 0 && canMove)
+            rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
     }
 
     public void SetPosition(Vector3 newPos)
@@ -61,11 +65,23 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform GetLocalTransform()
     { return transform; }
 
+    public void ResetValues()
+    {
+        healthBarScript.SetHealth(3);
+        ammo = baseAmmo;
+    }
+
     public float GetHealth()
-    { return healthBar.GetHealth(); }
+    { return healthBarScript.GetHealth(); }
 
     public int GetScore()
-    { return score.GetScore(); }
+    { return scoreScript.GetScore(); }
+
+    public int GetAmmo()
+    { return ammo; }
+
+    public void ReduceAmmo()
+    { ammo--; }
 
     public void Die()
     { isAlive = false; }

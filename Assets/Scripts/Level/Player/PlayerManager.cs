@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject hostObj, remoteObj, networkManagerObj, projectileControllerObj;
-    [SerializeField]
-    private Countdown countdown;
+    [SerializeField] private GameObject hostObj, remoteObj;
+
+    [SerializeField] private NetworkManager networkManager;
+    [SerializeField] private MenuController menuController;
+    [SerializeField] private ProjectileController projectileController;
+    [SerializeField] private Countdown countdown;
 
     private GameManager gameManager;
+
     private PlayerBehaviour local, remote;
-    private NetworkManager networkManager;
-    private ProjectileController projectileController;
+
     private bool localIsHost;
 
     private Vector3 tempNetPos;
@@ -21,9 +23,7 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        networkManager = networkManagerObj.GetComponent<NetworkManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        projectileController = projectileControllerObj.GetComponent<ProjectileController>();
 
         if (gameManager.GetRemote().GetPlayerType() == GameManager.NetPlayer.Type.REMOTE)
         {
@@ -58,32 +58,70 @@ public class PlayerManager : MonoBehaviour
     {
         networkManager.SendPlayerNetInfo(local);
         remote.SetPosition(tempNetPos);
-        remote.healthBar.SetHealth(tempHealth);
-        remote.score.SetScore(tempScore);
+        remote.healthBarScript.SetHealth(tempHealth);
+        remote.scoreScript.SetScore(tempScore);
+
+        TimerAndScoreCheck();
+    }
+
+    private void TimerAndScoreCheck()
+    {
+        if (local.GetScore() < 3 && remote.GetScore() < 3)
+        {
+            if (countdown.GetRoundTime() <= 0)
+            { NewRound(); }
+        }
+        else
+        {
+            local.canMove = false;
+            remote.canMove = false;
+            projectileController.ClearAllProjectiles();
+
+            // menu / popup
+            string winnerName = local.GetScore() >= 3 ? gameManager.GetLocal().GetUsername() : gameManager.GetRemote().GetUsername();
+
+            menuController.EnableMenu(winnerName);
+        }
+    }
+
+    private void NewRound()
+    {
+        countdown.ResetCountdown();
+        Vector3 startPos = localIsHost ? new(0, 2.5f, -5) : new(0, 2.5f, 5);
+        local.ResetValues();
+        local.SetPosition(startPos);
     }
 
     private void CheckKeyMovement(PlayerBehaviour localPlayerToMove)
     {
+        if (!local.canMove) return;
+
         if (Input.GetKeyDown(KeyCode.W)) localPlayerToMove.MoveUp();
         if (Input.GetKey(KeyCode.A)) localPlayerToMove.MoveLeft();
         if (Input.GetKeyDown(KeyCode.S)) localPlayerToMove.MoveDown();
         if (Input.GetKey(KeyCode.D)) localPlayerToMove.MoveRight();
 
-        if (Input.GetKeyDown(KeyCode.Space)) projectileController.LocalSpawnProjectile(GetBulletDirection());
+        if (Input.GetKeyDown(KeyCode.Space) && local.GetAmmo() > 0)
+        {
+            projectileController.LocalSpawnProjectile(GetBulletDirection());
+            local.ReduceAmmo();
+        }
     }
 
     private void CheckStatus()
     {
-        if (!local.isAlive) 
+        if (!local.isAlive)
         {
-            remote.score.Increase();
-            local.healthBar.ResetHealth();
+            remote.scoreScript.Increase();
+            NewRound();
+            local.healthBarScript.ResetHealth();
             local.isAlive = true;
         }
         if (!remote.isAlive)
         {
-            local.score.Increase();
-            remote.healthBar.ResetHealth();
+            local.scoreScript.Increase();
+            NewRound();
+            remote.healthBarScript.ResetHealth();
             remote.isAlive = true;
         }
     }
