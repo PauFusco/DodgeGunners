@@ -68,9 +68,9 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (m_jumpCount < maxJumps)
         {
+            PlayAnimation(AnimationState.JUMP);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
-            PlayAnimation(AnimationState.JUMP);
         }
     }
 
@@ -78,7 +78,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (m_jumpCount > 0 && canMove)
         {
-            rb.AddForce(5 * jumpForce * Vector3.down, ForceMode.Impulse);
+            rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
             PlayAnimation(AnimationState.FALL);
         }
     }
@@ -96,7 +96,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         healthBarScript.SetHealth(3);
         ammo = baseAmmo;
-        PlayAnimation(AnimationState.FALL);
+        PlayAnimation(AnimationState.IDLE);
     }
 
     public float GetHealth()
@@ -123,7 +123,7 @@ public class PlayerBehaviour : MonoBehaviour
     public void Die()
     { 
         isAlive = false;
-        PlayAnimation(AnimationState.HIT);
+        PlayAnimation(AnimationState.IDLE);
     }
     public void PlayAnimation(AnimationState state)
     {
