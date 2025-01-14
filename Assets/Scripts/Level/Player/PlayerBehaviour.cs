@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    private enum PLayerState
+    {
+        IDLE,
+        RUN,
+        DOUBLEJUMP,
+        JUMP,
+        FALL,
+        HIT,
+        DEFAULT
+    }
+
     [SerializeField]
     private int baseAmmo = 1;
 
@@ -23,7 +34,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     public bool isAlive = true;
     public bool canMove = true;
-    private bool isGrounded = true;
 
     private void Start()
     {
@@ -103,8 +113,17 @@ public class PlayerBehaviour : MonoBehaviour
         animator.Play("hit");
     }
 
+    public bool isGrounded() 
+    { return m_jumpCount == 0; }
+
+    public void SetIdle() 
+    { animator.Play("idle"); }
+
     public void Die()
-    { isAlive = false; }
+    { 
+        isAlive = false;
+        animator.Play("hit");
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

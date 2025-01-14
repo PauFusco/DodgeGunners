@@ -106,6 +106,11 @@ public class PlayerManager : MonoBehaviour
             projectileController.LocalSpawnProjectile(GetBulletDirection());
             local.ReduceAmmo();
         }
+
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && local.isGrounded())
+        {
+            local.SetIdle();
+        }
     }
 
     private void CheckStatus()
