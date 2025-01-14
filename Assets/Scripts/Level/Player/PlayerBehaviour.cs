@@ -8,6 +8,7 @@ public class PlayerBehaviour : MonoBehaviour
     private int baseAmmo = 1;
 
     private Rigidbody rb;
+    public Animator animator;
 
     public float speed = 2.0f;
     public float jumpForce = 5.0f;
@@ -22,6 +23,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     public bool isAlive = true;
     public bool canMove = true;
+    private bool isGrounded = true;
 
     private void Start()
     {
@@ -30,30 +32,44 @@ public class PlayerBehaviour : MonoBehaviour
             Debug.LogError("Rigidbody is missing on the player GameObject");
 
         ammo = baseAmmo;
+        animator.Play("fall");
     }
 
     public void SetPlayerTag(string username)
     { usernameText.text = username; }
 
     public void MoveLeft()
-    { transform.position += speed * Time.deltaTime * Vector3.back; }
+    { 
+        transform.position += speed * Time.deltaTime * Vector3.back;
+        animator.Play("run");
+    }
 
     public void MoveRight()
-    { transform.position += speed * Time.deltaTime * Vector3.forward; }
+    { 
+        transform.position += speed * Time.deltaTime * Vector3.forward;
+        animator.Play("run");
+    }
 
     public void MoveUp()
     {
+        animator.Play("doubleJump");
+
         if (m_jumpCount < maxJumps)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
+            animator.Play("jump");
         }
     }
 
     public void MoveDown()
     {
         if (m_jumpCount > 0 && canMove)
+        {
             rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
+            animator.Play("fall");
+        }
+
     }
 
     public void SetPosition(Vector3 newPos)
@@ -69,6 +85,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         healthBarScript.SetHealth(3);
         ammo = baseAmmo;
+        animator.Play("fall");
     }
 
     public float GetHealth()
@@ -81,7 +98,10 @@ public class PlayerBehaviour : MonoBehaviour
     { return ammo; }
 
     public void ReduceAmmo()
-    { ammo--; }
+    { 
+        ammo--;
+        animator.Play("hit");
+    }
 
     public void Die()
     { isAlive = false; }
@@ -91,6 +111,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             m_jumpCount = 0;
+            animator.Play("idle");
         }
     }
 }
