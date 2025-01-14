@@ -64,13 +64,14 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void MoveUp()
     {
-        PlayAnimation(AnimationState.DOUBLEJUMP);
-
         if (m_jumpCount < maxJumps)
         {
-            PlayAnimation(AnimationState.JUMP);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
+            
+            if (m_jumpCount == 1) PlayAnimation(AnimationState.JUMP);
+            else if (m_jumpCount == 2) PlayAnimation(AnimationState.DOUBLEJUMP);
+
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -111,7 +112,6 @@ public class PlayerBehaviour : MonoBehaviour
     public void ReduceAmmo()
     { 
         ammo--;
-        PlayAnimation(AnimationState.HIT);
     }
 
     public bool isGrounded() 
