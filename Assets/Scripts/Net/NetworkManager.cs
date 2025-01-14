@@ -39,6 +39,9 @@ public class NetworkManager : MonoBehaviour
             playerBWriter.Write(playerBHToSend.GetLocalTransform().rotation.eulerAngles.y);
             playerBWriter.Write(playerBHToSend.GetLocalTransform().rotation.eulerAngles.z);
 
+            // animation state to byte
+            playerBWriter.Write(playerBHToSend.GetCurrentAnimation());
+
             // HP to byte
             playerBWriter.Write(playerBHToSend.GetHealth());
 
@@ -74,6 +77,9 @@ public class NetworkManager : MonoBehaviour
             };
             _rotation = Quaternion.Euler(newERotation);
 
+            // animation state
+            _animationState = playerBReader.ReadInt32();
+
             // HP
             _health = playerBReader.ReadSingle();
 
@@ -84,6 +90,7 @@ public class NetworkManager : MonoBehaviour
         private readonly byte[] _data;
         private Vector3 _position = new();
         private Quaternion _rotation = new();
+        private readonly int _animationState;
         private readonly float _health;
         private readonly int _score;
         private readonly PacketType _type;
@@ -96,6 +103,9 @@ public class NetworkManager : MonoBehaviour
 
         public Quaternion GetRotation()
         { return _rotation; }
+
+        public int GetAnimationState() 
+        { return _animationState; }
 
         public float GetHealth()
         { return _health; }
@@ -254,6 +264,7 @@ public class NetworkManager : MonoBehaviour
                 case PacketType.PLAYER:
                     PlayerPacket PlPacket = new(data);
                     playerManager.SetNetPosition(PlPacket.GetPosition());
+                    playerManager.SetNetAnimation(PlPacket.GetAnimationState());
                     playerManager.SetNetHealth(PlPacket.GetHealth());
                     playerManager.SetNetScore(PlPacket.GetScore());
                     break;

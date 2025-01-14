@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    private enum PLayerState
+    public enum AnimationState
     {
         IDLE,
         RUN,
@@ -35,6 +35,8 @@ public class PlayerBehaviour : MonoBehaviour
     public bool isAlive = true;
     public bool canMove = true;
 
+    private AnimationState currentAnimation = AnimationState.IDLE;
+
     private void Start()
     {
         isAlive = true;
@@ -42,7 +44,7 @@ public class PlayerBehaviour : MonoBehaviour
             Debug.LogError("Rigidbody is missing on the player GameObject");
 
         ammo = baseAmmo;
-        animator.Play("fall");
+        PlayAnimation(currentAnimation);
     }
 
     public void SetPlayerTag(string username)
@@ -51,24 +53,24 @@ public class PlayerBehaviour : MonoBehaviour
     public void MoveLeft()
     { 
         transform.position += speed * Time.deltaTime * Vector3.back;
-        animator.Play("run");
+        PlayAnimation(AnimationState.RUN);
     }
 
     public void MoveRight()
     { 
         transform.position += speed * Time.deltaTime * Vector3.forward;
-        animator.Play("run");
+        PlayAnimation(AnimationState.RUN);
     }
 
     public void MoveUp()
     {
-        animator.Play("doubleJump");
+        PlayAnimation(AnimationState.DOUBLEJUMP);
 
         if (m_jumpCount < maxJumps)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             m_jumpCount++;
-            animator.Play("jump");
+            PlayAnimation(AnimationState.JUMP);
         }
     }
 
@@ -76,10 +78,9 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (m_jumpCount > 0 && canMove)
         {
-            rb.AddForce(3 * jumpForce * Vector3.down, ForceMode.Impulse);
-            animator.Play("fall");
+            rb.AddForce(5 * jumpForce * Vector3.down, ForceMode.Impulse);
+            PlayAnimation(AnimationState.FALL);
         }
-
     }
 
     public void SetPosition(Vector3 newPos)
@@ -95,7 +96,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         healthBarScript.SetHealth(3);
         ammo = baseAmmo;
-        animator.Play("fall");
+        PlayAnimation(AnimationState.FALL);
     }
 
     public float GetHealth()
@@ -110,19 +111,36 @@ public class PlayerBehaviour : MonoBehaviour
     public void ReduceAmmo()
     { 
         ammo--;
-        animator.Play("hit");
+        PlayAnimation(AnimationState.HIT);
     }
 
     public bool isGrounded() 
     { return m_jumpCount == 0; }
 
     public void SetIdle() 
-    { animator.Play("idle"); }
+    { PlayAnimation(AnimationState.IDLE); }
 
     public void Die()
     { 
         isAlive = false;
-        animator.Play("hit");
+        PlayAnimation(AnimationState.HIT);
+    }
+    public void PlayAnimation(AnimationState state)
+    {
+        if (currentAnimation == state) return;
+
+        currentAnimation = state;
+        animator.Play(state.ToString().ToLower());
+    }
+
+    public int GetCurrentAnimation()
+    {
+        return (int)currentAnimation;
+    }
+
+    public void SetAnimation(int state)
+    {
+        PlayAnimation((AnimationState)state);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -130,7 +148,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             m_jumpCount = 0;
-            animator.Play("idle");
+            SetIdle();
         }
     }
 }

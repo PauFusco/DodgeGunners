@@ -18,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 tempNetPos;
     private float tempHealth;
     private int tempScore;
+    private int tempAnim;
 
     public int bulletOffset;
 
@@ -60,6 +61,7 @@ public class PlayerManager : MonoBehaviour
         remote.SetPosition(tempNetPos);
         remote.healthBarScript.SetHealth(tempHealth);
         remote.scoreScript.SetScore(tempScore);
+        remote.SetAnimation(tempAnim);
 
         TimerAndScoreCheck();
     }
@@ -139,6 +141,9 @@ public class PlayerManager : MonoBehaviour
 
     public void SetNetScore(int score)
     { tempScore = score; }
+
+    public void SetNetAnimation(int anim)
+    { tempAnim = anim; }
 
     public bool GetLocalIsHost()
     { return localIsHost; }
