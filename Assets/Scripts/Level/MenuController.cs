@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject quitButtonObj, winnerBannerObj;
+    private GameObject quitButtonObj, winnerBannerObj, countdownObj, prizeObj;
 
     [SerializeField]
     private Button quitButton;
@@ -19,6 +19,8 @@ public class MenuController : MonoBehaviour
 
         quitButtonObj.SetActive(true);
         winnerBannerObj.SetActive(true);
+        countdownObj.SetActive(false);
+        prizeObj.SetActive(true);
 
         winnerBanner.text = winnerName + " WINS!!";
     }
