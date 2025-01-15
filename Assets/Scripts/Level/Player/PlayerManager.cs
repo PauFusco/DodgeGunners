@@ -109,7 +109,7 @@ public class PlayerManager : MonoBehaviour
             local.ReduceAmmo();
         }
 
-        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && local.isGrounded())
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && local.IsGrounded())
         {
             local.SetIdle();
         }

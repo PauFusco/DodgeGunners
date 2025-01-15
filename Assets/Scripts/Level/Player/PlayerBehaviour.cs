@@ -51,15 +51,15 @@ public class PlayerBehaviour : MonoBehaviour
     { usernameText.text = username; }
 
     public void MoveLeft()
-    { 
+    {
         transform.position += speed * Time.deltaTime * Vector3.back;
-        PlayAnimation(AnimationState.RUN);
+        if (IsGrounded()) PlayAnimation(AnimationState.RUN);
     }
 
     public void MoveRight()
-    { 
+    {
         transform.position += speed * Time.deltaTime * Vector3.forward;
-        PlayAnimation(AnimationState.RUN);
+        if (IsGrounded()) PlayAnimation(AnimationState.RUN);
     }
 
     public void MoveUp()
@@ -67,11 +67,11 @@ public class PlayerBehaviour : MonoBehaviour
         if (m_jumpCount < maxJumps)
         {
             m_jumpCount++;
-            
+
             if (m_jumpCount == 1) PlayAnimation(AnimationState.JUMP);
             else if (m_jumpCount == 2) PlayAnimation(AnimationState.DOUBLEJUMP);
 
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * (jumpForce - rb.velocity.y), ForceMode.Impulse);
         }
     }
 
@@ -110,21 +110,20 @@ public class PlayerBehaviour : MonoBehaviour
     { return ammo; }
 
     public void ReduceAmmo()
-    { 
-        ammo--;
-    }
+    { ammo--; }
 
-    public bool isGrounded() 
+    public bool IsGrounded()
     { return m_jumpCount == 0; }
 
-    public void SetIdle() 
+    public void SetIdle()
     { PlayAnimation(AnimationState.IDLE); }
 
     public void Die()
-    { 
+    {
         isAlive = false;
         PlayAnimation(AnimationState.IDLE);
     }
+
     public void PlayAnimation(AnimationState state)
     {
         if (currentAnimation == state) return;
